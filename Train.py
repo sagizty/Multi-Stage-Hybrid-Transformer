@@ -1,5 +1,5 @@
 """
-Training script  ver： OCT 26th 20：00 official release
+Training script  ver： OCT 26th 21：00 official release
 
 dataset structure: ImageNet
 image folder dataset is used.
@@ -781,8 +781,8 @@ def train_model(model, dataloaders, criterion, optimizer, class_names, dataset_s
                     writer.add_scalar(phase + '   ' + class_names[cls_idx] + ' recall',
                                       recall,
                                       epoch + 1)
-                # json log: update
-                json_log[str(epoch + 1)][phase] = log_dict
+            # json log: update
+            json_log[str(epoch + 1)][phase] = log_dict
 
             if phase == 'val':
                 temp_vac = epoch_acc

@@ -1,5 +1,5 @@
 """
-Testing script  ver： OCT 26th 20：00 official release
+Testing script  ver： OCT 26th 21：00 official release
 """
 
 from __future__ import print_function, division
@@ -145,6 +145,8 @@ def test_model(model, test_dataloader, criterion, class_names, test_dataset_size
             log_running_loss = 0.0
 
         index += 1
+    # json log: update
+    json_log['test'][phase] = log_dict
 
     # log criterias: print
     epoch_loss = running_loss / test_dataset_size
@@ -198,9 +200,6 @@ def test_model(model, test_dataloader, criterion, class_names, test_dataset_size
         print('{} TN: {}'.format(class_names[cls_idx], tn))
         print('{} FP: {}'.format(class_names[cls_idx], fp))
         print('{} FN: {}'.format(class_names[cls_idx], fn))
-
-        # json log: update
-        json_log['test'][phase] = log_dict
 
     print('\n')
 
