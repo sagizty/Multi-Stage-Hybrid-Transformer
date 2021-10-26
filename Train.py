@@ -1,5 +1,5 @@
 """
-Training script  ver： OCT 26th 19：00 official release
+Training script  ver： OCT 26th 20：00 official release
 
 dataset structure: ImageNet
 image folder dataset is used.
@@ -531,19 +531,24 @@ def train_model(model, dataloaders, criterion, optimizer, class_names, dataset_s
                 draw_path='/home/MSHT/results', enable_attention_check=False, enable_visualize_check=False,
                 enable_sam=False, writer=None):
     """
+    Training iteration
 
     :param model: model object
     :param dataloaders: 2 dataloader(train and val) dict
     :param criterion: loss func obj
     :param optimizer: optimizer obj
+
     :param class_names: The name of classes for priting
     :param dataset_sizes: size of datasets
     :param edge_size: image size for the input image
+
     :param model_idx: model idx for the getting pre-setted model
+
     :param num_epochs: total training epochs
     :param intake_epochs: number of skip over epochs when choosing the best model
     :param check_minibatch: number of skip over minibatch in calculating the criteria's results etc.
     :param scheduler: scheduler is an LR scheduler object from torch.optim.lr_scheduler.
+
     :param device: cpu/gpu object
     :param draw_path: path folder for output pic
 
@@ -584,7 +589,7 @@ def train_model(model, dataloaders, criterion, optimizer, class_names, dataset_s
             index = 0
             model_time = time.time()
 
-            # 初始化计数字典
+            # initiate the empty log dict
             log_dict = {}
             for cls_idx in range(len(class_names)):
                 # only float type is allowed in json
@@ -782,7 +787,7 @@ def train_model(model, dataloaders, criterion, optimizer, class_names, dataset_s
             if phase == 'val':
                 temp_vac = epoch_acc
             else:
-                temp_acc = epoch_acc  # 假设这里是train的时候，记得记录
+                temp_acc = epoch_acc  # not useful actually
 
             # deep copy the model
             if phase == 'val' and better_performance(temp_acc, temp_vac, best_acc, best_vac) and epoch >= intake_epochs:
@@ -851,7 +856,7 @@ def train_model(model, dataloaders, criterion, optimizer, class_names, dataset_s
 
     # load best model weights as final model training result
     model.load_state_dict(best_model_wts)
-    # 保存json_log  indent=2 for better view
+    # save json_log  indent=2 for better view
     json.dump(json_log, open(os.path.join(draw_path, model_idx + '_log.json'), 'w'), ensure_ascii=False, indent=2)
     return model
 
@@ -874,7 +879,7 @@ def main(args):
     gpu_idx = args.gpu_idx  # GPU idx start with0, -1 to use multipel GPU
 
     # model info
-    model_idx = args.model_idx  # 'Hybrid2_384_507_b8'  # 'ViT_384_505_b8'
+    model_idx = args.model_idx  # the model we are going to use. by the format of Model_size_other_info
     # structural parameter
     drop_rate = args.drop_rate
     attn_drop_rate = args.attn_drop_rate
@@ -952,7 +957,7 @@ def main(args):
     else:
         os.makedirs(draw_path)
 
-    # 调取tensorboard服务器
+    # start tensorboard backend
     if enable_tensorboard:
         writer = SummaryWriter(draw_path)
     else:
@@ -1089,7 +1094,7 @@ def main(args):
                            scheduler=scheduler, device=device, draw_path=draw_path,
                            enable_attention_check=enable_attention_check,
                            enable_visualize_check=enable_visualize_check, enable_sam=enable_sam, writer=writer)
-    # 保存模型(多卡训练的也保存为单卡模型）
+    # save model if its a multi-GPU model, save as a single GPU one too
     if gpu_use == -1:
         torch.save(model_ft.module.state_dict(), save_model_path)
         print('model trained by multi-GPUs has its single GPU copy saved at ', save_model_path)
