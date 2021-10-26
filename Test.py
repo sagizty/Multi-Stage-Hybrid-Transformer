@@ -3,8 +3,19 @@ Testing script  ver： OCT 26th 21：00 official release
 """
 
 from __future__ import print_function, division
+import os
+import argparse
+import json
+import torch
+import numpy as np
+import torch.nn as nn
+import torchvision
+from torchvision import models, transforms
+import time
+from tensorboardX import SummaryWriter
 
-from Train import *
+from utils.visual_usage import *
+from utils.tools import get_model, setup_seed, del_file
 
 
 def test_model(model, test_dataloader, criterion, class_names, test_dataset_size, model_idx, edge_size,

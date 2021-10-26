@@ -6,7 +6,36 @@ dataset: ImageNet-1k
 """
 
 from __future__ import print_function, division
-from Train import *
+import os
+import argparse
+import json
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.optim import lr_scheduler
+import numpy as np
+import torchvision
+from torchsummary import summary
+from torchvision import models, transforms
+import time
+
+import copy
+import shutil
+from tensorboardX import SummaryWriter
+
+from utils.visual_usage import *
+from utils.tools import get_model, setup_seed, del_file
+
+
+# Training Script
+def better_performance(temp_acc, temp_vac, best_acc, best_vac):  # determin which epoch have the best model
+
+    if temp_vac >= best_vac and temp_acc >= best_acc:
+        return True
+    elif temp_vac > best_vac:
+        return True
+    else:
+        return False
 
 
 def train_model_PT(model, dataloaders, criterion, optimizer, class_names, dataset_sizes, num_epochs=300,
