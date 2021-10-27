@@ -1,3 +1,7 @@
+"""
+get model func
+ver： OCT 27th 20：00 official release
+"""
 import torch
 import torch.nn as nn
 from torchvision import models

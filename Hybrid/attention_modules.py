@@ -1,9 +1,10 @@
 """
-辅助模块，注意力模块等  版本： 9月18日 14：20
+attention modules in ['SimAM', 'CBAM', 'SE']  were applied in the ablation study
+
+ver： OCT 27th 20：00 official release
 
 
-推荐：
-注意力模块第三方实现集合
+ref:
 https://github.com/xmu-xiaoma666/External-Attention-pytorch
 """
 
@@ -14,7 +15,7 @@ import torch.nn.functional as F
 from torch.nn import init
 
 
-# 辅助函数
+# help func
 class BasicConv(nn.Module):
     def __init__(self, in_planes, out_planes, kernel_size, stride=1, padding=0, dilation=1, groups=1, relu=True,
                  bn=True, bias=False):
@@ -103,17 +104,16 @@ class SpatialGate(nn.Module):
         return x * scale
 
 
-# 正文开始：
+# attention modules：
 class cbam_module(nn.Module):
     """
-    CBAM注意力模块
+    module：CBAM
 
     input、output= b, c, h, w
 
-    来自：CBAM
-    论文：
+    paper：
     https://arxiv.org/abs/1807.06521
-    代码块：
+    code：
     https://github.com/ZjjConan/SimAM/blob/master/networks/attentions
     """
 
@@ -137,14 +137,13 @@ class cbam_module(nn.Module):
 
 class se_module(nn.Module):
     """
-    SE注意力模块
+    module: SE
 
     input、output= b, c, h, w
 
-    来自：Squeeze-and-Excitation Networks
-    论文：
+    from paper Squeeze-and-Excitation Networks
     SE-Net  https://arxiv.org/abs/1709.01507
-    代码块：
+    code：
     https://github.com/ZjjConan/SimAM/blob/master/networks/attentions
     """
 
@@ -171,14 +170,13 @@ class se_module(nn.Module):
 
 class simam_module(torch.nn.Module):
     """
-    无参数的注意力模块
+    module:SimAM
+
     input、output= b, c, h, w
 
-    来自：
-    ICML
-    论文：
+    paper:(ICML)
     SimAM: A Simple, Parameter-Free Attention Module for Convolutional Neural Networks
-    代码块：
+    code:
     https://github.com/ZjjConan/SimAM/blob/master/networks/attentions/simam_module.py
     """
 
@@ -210,12 +208,12 @@ class simam_module(torch.nn.Module):
 
 class ResidualAttention(nn.Module):
     """
-    适用于多标签（一个图片，多个label）的注意力模块
+    module: ResidualAttention
 
     input、output= b, c, h, w
 
-    论文：ICCV 2021 Residual Attention: A Simple but Effective Method for Multi-Label Recognition
-    代码来自：https://github.com/xmu-xiaoma666/External-Attention-pytorch/blob/master/attention/ResidualAttention.py
+    Paper：ICCV 2021 Residual Attention: A Simple but Effective Method for Multi-Label Recognition
+    code：https://github.com/xmu-xiaoma666/External-Attention-pytorch/blob/master/attention/ResidualAttention.py
     """
 
     def __init__(self, channel=512, num_class=1000, la=0.2):
