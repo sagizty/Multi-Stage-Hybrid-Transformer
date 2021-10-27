@@ -15,7 +15,8 @@ import time
 from tensorboardX import SummaryWriter
 
 from utils.visual_usage import *
-from utils.tools import get_model, setup_seed, del_file
+from utils.tools import setup_seed, del_file
+from Hybrid.getmodel import get_model
 
 
 def test_model(model, test_dataloader, criterion, class_names, test_dataset_size, model_idx, edge_size,

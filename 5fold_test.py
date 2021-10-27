@@ -16,7 +16,8 @@ import time
 from tensorboardX import SummaryWriter
 
 from utils.visual_usage import *
-from utils.tools import get_model, setup_seed, del_file
+from utils.tools import del_file
+from Hybrid.getmodel import get_model
 
 from sklearn.metrics import roc_auc_score, roc_curve, auc
 from scipy import interp

@@ -24,8 +24,8 @@ import shutil
 from tensorboardX import SummaryWriter
 
 from utils.visual_usage import *
-from utils.tools import get_model, setup_seed, del_file
-
+from utils.tools import setup_seed, del_file
+from Hybrid.getmodel import get_model
 
 # Training Script
 def better_performance(temp_acc, temp_vac, best_acc, best_vac):  # determin which epoch have the best model
