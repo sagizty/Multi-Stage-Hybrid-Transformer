@@ -1,5 +1,5 @@
 
-# 简单介绍idea  版本： 8月18日 19：46
+# 简单介绍idea  版本： 10月27日 19：46
 ![MSHT](https://user-images.githubusercontent.com/50575108/139060018-fb06dab1-25bf-462c-9d29-c37eed1e3e02.jpg)
 
 The proposed Multi-stage Hybrid Transformer (MSHT) is design for pancreatic cancer’s cytopathological images analysis. Along with clinical innovation strategy ROSE, MSHT is aiming for faster and pathologist free trend in pancreatic cancer’s diagnoses. MSHT is made up with a CNN backbone which generating the feature map from different stages and a Focus-guided Decoder structure (FGD structure) works on global modeling and local attention information hybridizing.
