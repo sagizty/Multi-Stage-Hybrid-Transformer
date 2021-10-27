@@ -1,6 +1,3 @@
-近期关注细粒度的CV SOTA工作
-
-
 CrossFormer
 
 Paper: 
@@ -11,4 +8,4 @@ Code from:
 https://github.com/cheerss/CrossFormer
 
 
-使用其模型作为backbone+mlp进行公平对比
+this is used for comparation with the most recent work
