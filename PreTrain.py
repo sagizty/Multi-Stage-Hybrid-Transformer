@@ -1,5 +1,5 @@
 """
-imagenet Pre-Training script  ver： OCT 27th 14：00 official release
+imagenet Pre-Training script  ver： OCT 27th 20：00 official release
 
 model: Hybrid2_384_PreTrain
 dataset: ImageNet-1k

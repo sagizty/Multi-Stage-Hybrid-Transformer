@@ -1,5 +1,5 @@
 """
-5 fold Testing script  ver： OCT 27th 14：00 official release
+5 fold Testing script  ver： OCT 27th 20：00 official release
 """
 
 from __future__ import print_function, division

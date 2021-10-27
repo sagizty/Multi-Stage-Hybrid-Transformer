@@ -1,5 +1,5 @@
 """
-Training script  ver： OCT 27th 14：00 official release
+Training script  ver： OCT 27th 20：00 official release
 
 dataset structure: ImageNet
 image folder dataset is used.
