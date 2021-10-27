@@ -1,5 +1,5 @@
 """
-imagenet Pre-Training script  ver： OCT 26th 20：00 official release
+imagenet Pre-Training script  ver： OCT 27th 14：00 official release
 
 model: Hybrid2_384_PreTrain
 dataset: ImageNet-1k
@@ -425,7 +425,7 @@ def main(args):
         import notifyemail as notify
 
         notify.Reboost(mail_host='smtp.163.com', mail_user='tum9598@163.com', mail_pass='EXVGQACCXPUIUQAE',
-                       default_reciving_list=['904639643@qq.com'],
+                       default_reciving_list=['tum9598@163.com'],  # change here if u want to use notify
                        log_root_path='log', max_log_cnt=5)
 
         if enable_tensorboard:
