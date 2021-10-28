@@ -1,5 +1,7 @@
 """
-Transformer blocks script  ver： OCT 27th 20：00 official release
+Transformer blocks script  ver： OCT 28th 15：00 official release
+
+bug fix Cross attn compareability
 
 by the authors, check our github page:
 https://github.com/sagizty/Multi-Stage-Hybrid-Transformer
@@ -245,8 +247,8 @@ class Decoder_Block(nn.Module):
         self.FFN1 = FFN(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
         # Guided_Attention
-        self.Guided_attn = Guided_Attention(dim, num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale,
-                                            attn_drop=attn_drop, proj_drop=drop)
+        self.Cross_attn = Guided_Attention(dim, num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale,
+                                           attn_drop=attn_drop, proj_drop=drop)
 
         # Add & Norm
         self.norm2 = norm_layer(dim)
@@ -262,7 +264,7 @@ class Decoder_Block(nn.Module):
         v_self = v_self + self.drop_path(self.FFN1(self.norm1(v_self)))
 
         # norm layer for v only, the normalization of q and k is inside FGD Focus block
-        v_self = v_self + self.drop_path(self.Guided_attn(q_encoder, k_encoder, self.norm2(v_self)))
+        v_self = v_self + self.drop_path(self.Cross_attn(q_encoder, k_encoder, self.norm2(v_self)))
 
         v_self = v_self + self.drop_path(self.FFN2(self.norm3(v_self)))
 
