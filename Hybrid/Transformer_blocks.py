@@ -1,7 +1,7 @@
 """
 Transformer blocks script  ver： OCT 28th 15：00 official release
 
-bug fix Cross attn compareability
+bug fix: 'Cross-attn' name is used in MHGA for compareability
 
 by the authors, check our github page:
 https://github.com/sagizty/Multi-Stage-Hybrid-Transformer
