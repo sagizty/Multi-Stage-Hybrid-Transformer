@@ -1,11 +1,14 @@
 
-# 简单介绍idea  版本： 10月27日 19：46
+# MSHT: Multi-Stage Hybrid Transformer for pancreatic cancer diagnoisis
 ![MSHT](https://user-images.githubusercontent.com/50575108/139060018-fb06dab1-25bf-462c-9d29-c37eed1e3e02.jpg)
 
-The proposed Multi-stage Hybrid Transformer (MSHT) is design for pancreatic cancer’s cytopathological images analysis. Along with clinical innovation strategy ROSE, MSHT is aiming for faster and pathologist free trend in pancreatic cancer’s diagnoses. MSHT is made up with a CNN backbone which generating the feature map from different stages and a Focus-guided Decoder structure (FGD structure) works on global modeling and local attention information hybridizing.
+This is the official page of the MSHT with its full experimental script and record, everyone can view its whole training process and script. We dedicate to the opensource concept and wish the schoolers can be benefit from our release. 
 
+The trained models and dataset is not aviliable due to the requirement of the hospital.
 
-我们的motivation在于希望不同stage卷积的注意力特征带来的对细节的关注能够帮助全局建模的transformer在不同stage上更好的注意到局部特性。具体将通过focus模块引导decoder的cross attention模块，从而在卷积模块考虑了局部特征并增强泛化性的同时，帮助transformer模块在全局建模中获得优势。
+The proposed Multi-stage Hybrid Transformer (MSHT) is designed for pancreatic cancer’s cytopathological images analysis. Along with clinical innovation strategy ROSE, MSHT is aiming for faster and pathologist free trend in pancreatic cancer’s diagnoses. MSHT is made up with a CNN backbone which generating the feature map from different stages and a Focus-guided Decoder structure (FGD structure) works on global modeling and local attention information hybridizing.
+
+To achieve our ambition 
 ![Focus](https://user-images.githubusercontent.com/50575108/139060041-0562c141-008a-4af1-aa2c-134dc7a80f59.jpg)
 
 我们注意到，卷积网络在病理学图像的研究中被广泛应用，由于卷积运算具有的inductive bias他们通常具有较好的泛化性并在下游任务的迁移中表现良好。从计算特性上来说，采用卷积神经网络的模型能够较好的关注局部特征，但在全局特征建模上由于其感受野交互的限制需要依托于层级结构，这样的设计使得其在关注全局特征时局部特征的重要性被削弱了。在rose数据中，全局的细胞分布与细胞间相对位置关系十分重要（引用医学内容..）同时癌症与否的确认也与细胞的细致结构紧密相关（引用医学内容…）。因此全局特征的建模能够更好的适配本任务。
