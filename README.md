@@ -1,5 +1,5 @@
 
-# MSHT: Multi-Stage Hybrid Transformer for pancreatic cancer diagnoisis
+# MSHT: Multi-Stage Hybrid Transformer for ROSE images of the pancreatic cancer diagnoisising
 
 This is the official page of the MSHT with its full experimental script and record, everyone can view its whole training process and script. We dedicate to the opensource concept and wish the schoolers can be benefit from our release. 
 
