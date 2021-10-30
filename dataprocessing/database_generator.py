@@ -1,5 +1,5 @@
 '''
-整理数据，确保所有数据都为jpg格式  版本： 8月11日 13：46
+Organize the data to ensure that all data is in jpg format  ver： AUG 11th 13:46 official release
 
 '''
 import os
@@ -14,8 +14,8 @@ import torchvision.transforms
 
 def del_file(filepath):
     """
-    删除某一目录下的所有文件或文件夹
-    :param filepath: 路径
+    Delete all files and folders in one directory
+    :param filepath: file path
     :return:
     """
     del_list = os.listdir(filepath)
@@ -35,7 +35,7 @@ def make_and_clear_path(file_pack_path):
 
 def find_all_files(root, suffix=None):
     '''
-    返回特定后缀的所有文件路径列表
+    Return a list of file paths ended with specific suffix
     '''
     res = []
     for root, _, files in os.walk(root):
@@ -48,7 +48,7 @@ def find_all_files(root, suffix=None):
 
 def read_file(f_dir):
     '''
-    读取文件，转为numpy格式
+    Read a file and convert it into numpy format
     '''
     f_image = Image.open(f_dir)
     return f_image
@@ -56,10 +56,10 @@ def read_file(f_dir):
 
 def change_shape(image, corp_x=2400, corp_y=1800, f_x=1390, f_y=1038):
     '''
-    将图片大小改为x*y
+    Resize the image into x*y
     '''
     if image.size[0] > corp_x or image.size[1] > corp_y:
-        # 生成一个CenterCrop类的对象,用来将图片从中心裁剪成corp_x  corp_y
+        # Generate an object of CenterCrop class to crop the image from the center into corp_x*corp_y
         crop_obj = torchvision.transforms.CenterCrop((corp_y, corp_x))
         image = crop_obj(image)
         # print(image.size[0], image.size[1])
@@ -70,7 +70,7 @@ def change_shape(image, corp_x=2400, corp_y=1800, f_x=1390, f_y=1038):
 
 def save_file(f_image, save_dir, suffix='.jpg'):
     '''
-    保存图片，并重命名，生成重命名后的表格
+    Save and rename the images, generate the renamed table
     '''
     filepath, _ = os.path.split(save_dir)
     if not os.path.exists(filepath):
@@ -87,9 +87,9 @@ def PC_to_stander(root_from=r'C:\Users\admin\Desktop\dataset\PC',
     f_dir_list = find_all_files(root=root_from)
     # print(f_dir_list)
 
-    name_dict = {}  # 保存新旧名称
+    name_dict = {}  # Save the new and old names
     old_size_type = []
-    size_type = []  # 记录所有不同的图片尺寸（reshape过后的）
+    size_type = []  # Record all different image sizes (after reshape)
 
     for seq in tqdm(range(len(f_dir_list))):
         f_dir = f_dir_list[seq]
@@ -111,7 +111,7 @@ def PC_to_stander(root_from=r'C:\Users\admin\Desktop\dataset\PC',
         if size not in size_type:
             size_type.append(size)
 
-        save_dir = os.path.join(root_target, str(seq + 1))  # 设置保存目录
+        save_dir = os.path.join(root_target, str(seq + 1))  # Set save directory
         name_dict[save_dir] = f_dir
 
         save_file(f_image, save_dir)
@@ -128,21 +128,21 @@ def trans_csv_folder_to_imagefoder(target_path=r'C:\Users\admin\Desktop\MRAS_SEE
                                    original_path=r'C:\Users\admin\Desktop\dataset\MARS_SEED_Dataset\train\train_org_image',
                                    csv_path=r'C:\Users\admin\Desktop\dataset\MARS_SEED_Dataset\train\train_label.csv'):
     """
-    原数据格式：一个装图片的文件夹+一个写每个图片名字与类别是啥的有表头的csv
-    处理原数据集获得image folder格式数据包
+    Original data format: a folder with image inside + a csv file with header which has the name and category of every image.
+    Process original dataset and get data packet in image folder format
 
-    :param target_path: 目标image folder位置
-    :param original_path: 装图片的文件夹
-    :param csv_path: 一个写每个图片名字与类别是啥的有表头的csv
+    :param target_path: the path of target image folder
+    :param original_path: The folder with images
+    :param csv_path: A csv file with header and the name and category of each image
     """
     idx = -1
     with open(csv_path, "rt", encoding="utf-8") as csvfile:
         reader = csv.reader(csvfile)
         rows = [row for row in reader]
-        make_and_clear_path(target_path)  # 清空target_path
+        make_and_clear_path(target_path)  # Clear target_path
         for row in tqdm(rows):
             idx += 1
-            if idx == 0:  # 跳过第一个表头
+            if idx == 0:  # Skip the first header
                 continue
             item_path = os.path.join(original_path, row[0])
             if os.path.exists(os.path.join(target_path, row[1])):
