@@ -1,7 +1,7 @@
-# 基于timm库做的融合模型
+# MSHT blocks
 
 
-参考资料：
+ref：
 
 https://www.freeaihub.com/post/94067.html
 
@@ -13,6 +13,6 @@ https://mp.weixin.qq.com/s?__biz=MzI5MDUyMDIxNA==&mid=2247538383&idx=2&sn=d82d00
 
 
 
-# timm官方文档
+# code is based on timm
 
 https://rwightman.github.io/pytorch-image-models/
