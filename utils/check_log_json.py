@@ -1,12 +1,11 @@
 '''
-整理log,输出excel  版本： 10月21日 14：00  # 适配不同系统
-
+Organize log and output excel  ver： OCT 21th 14：00 official release
 '''
 
 import json
 import os
 
-try:  # 适配不同系统
+try:  # Adapt different systems
     from utils.metrics import *
 except:
     from metrics import *
@@ -14,7 +13,7 @@ except:
 
 def find_all_files(root, suffix=None):
     '''
-    返回特定后缀的所有文件路径列表
+    Return a list of all file paths with a specific suffix
     '''
     res = []
     for root, _, files in os.walk(root):
@@ -58,43 +57,43 @@ def read_a_json_log(json_path, record_dir):
             empty_str2 += ' ,'
 
         result_csv_name = os.path.split(json_path)[1].split('.')[0] + '.csv'
-        result_indicators = [os.path.split(json_path)[1].split('.')[0], ]  # 第一个位置留给model name
+        result_indicators = [os.path.split(json_path)[1].split('.')[0], ]  # The first position is reserved for model name
 
     with open(os.path.join(record_dir, result_csv_name), 'w') as f_log:
         if test_status:
-            # 写头文件1
+            # Write header file 1
             f_log.write('Phase:,' + empty_str1 + ' Test\n')
             head = 'Epoch:, '
-            class_head = 'Acc, '  # 目标 'Acc, '+ 类别* indicator_list
+            class_head = 'Acc, '  # target 'Acc, '+ category* indicator_list
             for cls in cls_list:
                 for indicator in indicator_list:
                     class_head += cls + '_' + indicator + ', '
 
-            # 写头文件2
+            # Write header file 2
             f_log.write(head + class_head + '\n')  # Test
             f_log.close()
 
         else:
-            # 写头文件1
+            # Write header file 3
             f_log.write('Phase:,' + empty_str1 + ' Train' + empty_str2 + ' Val\n')
 
             head = 'Epoch:, '
-            class_head = 'Acc, '  # 目标 'Acc, '+ 类别* indicator_list
+            class_head = 'Acc, '  # target 'Acc, '+ category* indicator_list
             for cls in cls_list:
                 for indicator in indicator_list:
                     class_head += cls + '_' + indicator + ', '
 
-            # 写头文件2
+            # Write header file 4
             f_log.write(head + class_head + class_head + '\n')  # Train val
             f_log.close()
 
-    # 初始化最佳
+    # Optimum init
     best_val_acc = 0.0
 
     for epoch in range(1, epoch_num + 1):
         if test_status:
             epoch = 'test'
-        epoch_indicators = [epoch, ]  # 第一个位置留给epoch
+        epoch_indicators = [epoch, ]  #  Leave the first position to epoch
 
         for phase in ['train', 'val']:
             if test_status:
@@ -102,7 +101,7 @@ def read_a_json_log(json_path, record_dir):
 
             sum_tp = 0.0
 
-            phase_indicators = [0.0, ]  # 第一个位置留给ACC
+            phase_indicators = [0.0, ]  # Leave the first position to ACC
 
             for cls in cls_list:
                 log = load_dict[str(epoch)][phase][cls]
@@ -125,7 +124,7 @@ def read_a_json_log(json_path, record_dir):
                 cls_indicators = [Precision, Recall, Sensitivity, Specificity, NPV, F1_score]
                 phase_indicators.extend(cls_indicators)
 
-            Acc = 100 * (sum_tp / float(tp + tn + fn + fp))  # 直接取最后一个的tp tn fn fp 算总数就行
+            Acc = 100 * (sum_tp / float(tp + tn + fn + fp))  # Just take the last tp tn fn fp and count the total
             phase_indicators[0] = Acc
 
             epoch_indicators.extend(phase_indicators)
@@ -154,9 +153,9 @@ def read_a_json_log(json_path, record_dir):
     with open(os.path.join(record_dir, result_csv_name), 'a') as f_log:
         f_log.write('\n')
         f_log.write('\n')
-        # 写头文件1
+        # Write header file 1
         f_log.write('Phase:,' + empty_str1 + ' Train' + empty_str2 + ' Val\n')
-        # 写头文件2
+        # Write header file 2
         f_log.write('Best Epoch:, ' + class_head + class_head + '\n')  # Train val
 
         try:
@@ -164,10 +163,10 @@ def read_a_json_log(json_path, record_dir):
                 f_log.write(str(i) + ', ')
             f_log.close()
             result_indicators.extend(best_epoch_indicators)
-            return result_indicators  # 结束
+            return result_indicators  # Finish
         except:
             print('No best_epoch_indicators')
-            return result_indicators  # 结束
+            return result_indicators  # Finish
 
 
 def read_all_logs(logs_path, record_dir):
