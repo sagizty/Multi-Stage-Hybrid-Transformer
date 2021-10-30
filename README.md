@@ -30,3 +30,18 @@ The Focus is stack up by: 1.An attention block 2.a dual path pooling layer 3. pr
 Meanwhile, a new decodel is used to work with the attention guidance from CNN stages. We use the MHGA(multi-head guided attention) to access the prominent and general attention information and encode them inside the transformer modeling process.
 ![Decoder](https://user-images.githubusercontent.com/50575108/139060071-e34394c1-08a5-40e0-b4a4-9b1032722c64.jpg)
 
+
+# Imaging results of MSHT
+
+Focus on the interpretability, the MSHT perform well when visualizing its attention area by grad CAM technique.
+
+*  For most cases, as shown in fig(), MSHT can correctly distinguish the samples and focus on the area like the senior pathologists.
+<img width="319" alt="Screen Shot 2021-10-30 at 2 33 51 PM" src="https://user-images.githubusercontent.com/50575108/139523230-47bbdf38-7d14-48b6-8dec-7bdd87b03e19.png">
+
+*  Additionally, the misclassification problem is yet to be overcome, by taking 2 examples.
+
+A few positive samples were misclassified to its negative counterparts.  Comparing with senior pathologists, the small number of the cells made MSHT difficult to distinct cancer cells by its arrangement and relative size information. 
+<img width="318" alt="Screen Shot 2021-10-30 at 2 34 03 PM" src="https://user-images.githubusercontent.com/50575108/139523238-ead3dd84-8989-4566-9e50-76243d304167.png">
+
+A specific image was misclassified to positive condition by 3 of the 5-fold models. By the analysis of senior pathologist, the reason can be revealed on the fluctuation of the squeezed sample, which mislead MSHT by the shape of the cells.
+<img width="322" alt="Screen Shot 2021-10-30 at 2 34 10 PM" src="https://user-images.githubusercontent.com/50575108/139523247-f4b41d45-ac41-4c99-baf7-39439bd35ff2.png">
