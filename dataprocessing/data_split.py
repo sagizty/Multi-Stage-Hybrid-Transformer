@@ -69,7 +69,7 @@ def a_dataset_split(src_data_folder, class_name, train_scale, val_scale, test_sc
         current_idx = current_idx + 1
 
     print("*********************************{}*************************************".format(class_name)+'\n'+
-          "{} class has been divided into {}:{}:{}, a total of {} pictures".format(class_name, train_scale, val_scale, test_scale,
+          "{} class has been divided into {}:{}:{}, a total of {} images".format(class_name, train_scale, val_scale, test_scale,
                                                 current_data_length) + '\n' + "Train set{}: {} pics".format(train_folder,
                                                                                                  train_num)
           + '\n' + "Validation set{}: {} pics".format(val_folder, val_num) + '\n' + "Test set{}: {} pics".format(test_folder, test_num)
@@ -124,7 +124,7 @@ def data_set_split(src_data_folder, target_data_folder='./dataset', train_scale=
         process_pool.join()  # Wait till all process in process pool finished, must be placed after the 'close' statement
 
     else:
-        # Divide the dataset according to the proportion, and copy the data picture
+        # Divide the dataset according to the proportion, and copy the data image
         # Traverse by category
         for class_name in class_names:
             a_dataset_split(src_data_folder, class_name, train_scale, val_scale, test_scale)
@@ -144,7 +144,7 @@ def k_fold_split(src_data_folder, target_data_folder='./kfold', k=5):
     print("Begin dataset division")
     class_names = os.listdir(src_data_folder)  # Get category name
 
-    # Divide the dataset for each category according to the proportion, and copy and distribute the data pictures
+    # Divide the dataset for each category according to the proportion, and copy and distribute the data images
     for class_name in class_names:  # Classification traversal first
 
         current_class_data_path = os.path.join(src_data_folder, class_name)
@@ -162,7 +162,7 @@ def k_fold_split(src_data_folder, target_data_folder='./kfold', k=5):
             for pack_idx, name in enumerate(temp_split_pack[-1]):  # The extra pack have at most k-1 data
                 fold_name_pack[pack_idx].append(name)
 
-        print("{} class is divided into {} cross-validation, a total of {} pictures".format(class_name, k, current_data_length))
+        print("{} class is divided into {} cross-validation, a total of {} images".format(class_name, k, current_data_length))
 
         for p in range(1, k + 1):  # For each fold, start from 1
             # Folder
