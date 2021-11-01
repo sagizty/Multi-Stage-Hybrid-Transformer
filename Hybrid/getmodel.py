@@ -1,6 +1,6 @@
 """
 get model func
-ver： OCT 27th 20：00 official release
+ver： Nov 1st 16：00 official release
 """
 import torch
 import torch.nn as nn
@@ -164,6 +164,13 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         model_names = timm.list_models('*efficientnet*')
         pprint(model_names)
         model = timm.create_model(model_idx[0:15], pretrained=pretrained_backbone, num_classes=num_classes)
+
+    elif model_idx[0:14] == 'ResN50_ViT_384':  # ResNet+ViT融合模型384
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*vit_base_resnet*')
+        pprint(model_names)
+        model = timm.create_model('vit_base_resnet50_384', pretrained=pretrained_backbone, num_classes=num_classes)
 
     elif model_idx[0:16] == 'cross_former_224':  # Transfer learning for crossformer base
         from ..cross_former_models import crossformer
