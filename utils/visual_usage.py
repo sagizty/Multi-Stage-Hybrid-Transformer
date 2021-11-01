@@ -1,5 +1,5 @@
 """
-attention visulization config  ver： Nov 1st 20：00 official release
+attention visulization config  ver： Nov 2nd 01：00 official release
 """
 
 import torch
@@ -95,19 +95,14 @@ def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True):
         grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
                            reshape_transform=swinT_transform_384)
 
+    elif model_idx[0:6] == 'ResNet':
+        target_layers = [model.layer4[-1]]
+        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda, reshape_transform=None)  # CNN: None
+
     elif model_idx[0:7] == 'Hybrid1' and edge_size == 384:
         target_layers = [model.blocks[-1].norm1]
         grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
                            reshape_transform=cls_token_s12_transform)
-
-    elif model_idx[0:10] == 'ResN50_ViT' and edge_size == 384:
-        target_layers = [model.blocks[-1].norm1]  # model.layer4[-1]
-        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
-                           reshape_transform=cls_token_s24_transform)
-
-    elif model_idx[0:6] == 'ResNet':
-        target_layers = [model.layer4[-1]]
-        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda, reshape_transform=None)  # CNN: None
 
     elif model_idx[0:7] == 'Hybrid2' and edge_size == 384:
         target_layers = [model.dec4.norm1]
@@ -124,6 +119,20 @@ def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True):
         target_layers = [model.dec3.norm1]
         grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
                            reshape_transform=cls_token_s24_transform)
+
+    elif model_idx[0:9] == 'mobilenet':
+        target_layers = [model.blocks[-1]]
+        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda, reshape_transform=None)  # CNN: None
+
+    elif model_idx[0:10] == 'ResN50_ViT' and edge_size == 384:
+        target_layers = [model.blocks[-1].norm1]  # model.layer4[-1]
+        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                           reshape_transform=cls_token_s24_transform)
+
+    elif model_idx[0:12] == 'efficientnet':
+        target_layers = [model.conv_head]
+        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda, reshape_transform=None)  # CNN: None
+
 
     else:
         print('ERRO in model_idx')
