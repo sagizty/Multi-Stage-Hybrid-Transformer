@@ -75,7 +75,7 @@ Focus on the interpretability, the MSHT perform well when visualizing its attent
 
 *  For most cases, as shown in fig(), MSHT can correctly distinguish the samples and focus on the area like the senior pathologists, which outperform most counterparts.
 
-![Picture1](https://user-images.githubusercontent.com/50575108/140472543-86221543-0eb8-4ace-a711-d568e6e8a542.jpg)
+<img width="1297" alt="Screen Shot 2021-11-05 at 3 20 23 PM" src="https://user-images.githubusercontent.com/50575108/140473142-58747866-784f-481d-8057-ff935c9ac380.png">
 
 
 *  Additionally, the misclassification problem is yet to be overcome, by taking 2 examples.
