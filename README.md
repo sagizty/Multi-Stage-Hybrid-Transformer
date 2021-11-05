@@ -73,9 +73,10 @@ Meanwhile, a new decodel is used to work with the attention guidance from CNN st
 
 Focus on the interpretability, the MSHT perform well when visualizing its attention area by grad CAM technique.
 
-*  For most cases, as shown in fig(), MSHT can correctly distinguish the samples and focus on the area like the senior pathologists.
+*  For most cases, as shown in fig(), MSHT can correctly distinguish the samples and focus on the area like the senior pathologists, which outperform most counterparts.
 
-<img width="319" alt="Screen Shot 2021-10-30 at 2 33 51 PM" src="https://user-images.githubusercontent.com/50575108/139523230-47bbdf38-7d14-48b6-8dec-7bdd87b03e19.png">
+![Picture1](https://user-images.githubusercontent.com/50575108/140472543-86221543-0eb8-4ace-a711-d568e6e8a542.jpg)
+
 
 *  Additionally, the misclassification problem is yet to be overcome, by taking 2 examples.
 
