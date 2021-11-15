@@ -14,7 +14,7 @@ In the field of histology and cytopathology, convelutional neural networks perfo
 
 # MSHT model
 
-The proposed Multi-stage Hybrid Transformer (MSHT) is designed for pancreatic cancer’s cytopathological images analysis. Along with clinical innovation strategy ROSE, MSHT is aiming for faster and pathologist free trend in pancreatic cancer’s diagnoses. MSHT is made up with a CNN backbone which generating the feature map from different stages and a Focus-guided Decoder structure (FGD structure) works on global modeling and local attention information hybridizing.
+The proposed Multi-stage Hybrid Transformer (MSHT) is designed for pancreatic cancer’s cytopathological images analysis. Along with clinical innovation strategy ROSE, MSHT is aiming for faster and pathologist free trend in pancreatic cancer’s diagnoses. The main idea is to concordantly encoding feature and bias of the early-stage CNN into the global modeling process of the Transformer. MSHT is made up with a CNN backbone which generating the feature map from different stages and a Focus-guided Decoder structure (FGD structure) works on global modeling and local attention information hybridizing.
 
 ![MSHT](https://user-images.githubusercontent.com/50575108/139060018-fb06dab1-25bf-462c-9d29-c37eed1e3e02.jpg)
 
