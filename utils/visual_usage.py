@@ -1,12 +1,19 @@
 """
-attention visulization config  ver： Nov 2nd 01：00 official release
+attention visulization config  ver： Nov 29th 15：30 official release
 """
 
 import torch
+import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 from PIL import Image
+
+
+def softmax(x):
+    """Compute the softmax in a numerically stable way."""
+    sof = nn.Softmax()
+    return sof(x)
 
 
 def imshow(inp, title=None):  # Imshow for Tensor
@@ -36,6 +43,15 @@ def cls_token_s12_transform(tensor, height=12, width=12):  # based on pytorch_gr
     return result
 
 
+def cls_token_s14_transform(tensor, height=14, width=14):  # based on pytorch_grad_cam
+    result = tensor[:, 1:, :].reshape(tensor.size(0), height, width, tensor.size(2))
+
+    # Bring the channels to the first dimension,
+    # like in CNNs.
+    result = result.transpose(2, 3).transpose(1, 2)
+    return result
+
+
 def cls_token_s24_transform(tensor, height=24, width=24):  # based on pytorch_grad_cam
     result = tensor[:, 1:, :].reshape(tensor.size(0), height, width, tensor.size(2))
 
@@ -54,8 +70,17 @@ def no_cls_token_s12_transform(tensor, height=12, width=12):  # based on pytorch
     return result
 
 
-def swinT_transform_384(tensor, height=12, width=12):  # 224 7
-    result = tensor.reshape(tensor.size(0),height, width, tensor.size(2))
+def swinT_transform_224(tensor, height=7, width=7):  # 224 7
+    result = tensor.reshape(tensor.size(0), height, width, tensor.size(2))
+
+    # Bring the channels to the first dimension,
+    # like in CNNs.
+    result = result.transpose(2, 3).transpose(1, 2)
+    return result
+
+
+def swinT_transform_384(tensor, height=12, width=12):  # 384 12
+    result = tensor.reshape(tensor.size(0), height, width, tensor.size(2))
 
     # Bring the channels to the first dimension,
     # like in CNNs.
@@ -71,29 +96,38 @@ def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True):
     """
     from pytorch_grad_cam import GradCAM
 
-    # reshape_transform  todo
+    # reshape_transform  todo conformer 224！！
     # check class: target_category = None
     # If None, returns the map for the highest scoring category.
     # Otherwise, targets the requested category.
 
-    if model_idx[0:3] == 'ViT' and edge_size == 384:
+    if model_idx[0:3] == 'ViT' or model_idx[0:4] == 'deit':
         target_layers = [model.blocks[-1].norm1]
-        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
-                           reshape_transform=cls_token_s24_transform)
+        if edge_size == 384:
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=cls_token_s24_transform)
+        elif edge_size == 224:
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=cls_token_s14_transform)
+        else:
+            print('ERRO in ViT/DeiT edge size')
+            return -1
 
     elif model_idx[0:3] == 'vgg':
         target_layers = [model.features[-1]]
         grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda, reshape_transform=None)
 
-    elif model_idx[0:4] == 'deit' and edge_size == 384:
-        target_layers = [model.blocks[-1].norm1]
-        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
-                           reshape_transform=cls_token_s24_transform)
-
-    elif model_idx[0:6] == 'swin_b' and edge_size == 384:
-        target_layers = [model.layers[-1].blocks[-1].norm1]  # model.layer4[-1]
-        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
-                           reshape_transform=swinT_transform_384)
+    elif model_idx[0:6] == 'swin_b':
+        target_layers = [model.layers[-1].blocks[-1].norm1]
+        if edge_size == 384:
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=swinT_transform_384)
+        elif edge_size == 224:
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=swinT_transform_224)
+        else:
+            print('ERRO in Swin Transformer edge size')
+            return -1
 
     elif model_idx[0:6] == 'ResNet':
         target_layers = [model.layer4[-1]]
@@ -126,8 +160,15 @@ def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True):
 
     elif model_idx[0:10] == 'ResN50_ViT' and edge_size == 384:
         target_layers = [model.blocks[-1].norm1]  # model.layer4[-1]
-        grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
-                           reshape_transform=cls_token_s24_transform)
+        if edge_size == 384:
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=cls_token_s24_transform)
+        elif edge_size == 224:
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=cls_token_s14_transform)
+        else:
+            print('ERRO in ResN50_ViT edge size')
+            return -1
 
     elif model_idx[0:12] == 'efficientnet':
         target_layers = [model.conv_head]
@@ -142,7 +183,7 @@ def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True):
 
 
 def check_SAA(model, model_idx, edge_size, dataloader, class_names, check_index=1, num_images=2, device='cpu',
-              skip_batch=10, pic_name='test', draw_path='/home/ZTY/imaging_results', writer=None):
+              skip_batch=10, pic_name='test', draw_path='../imaging_results', check_all=True, writer=None):
     """
     check num_images of images and visual the models's attention area
     output a pic with 2 column and rows of num_images
@@ -158,6 +199,9 @@ def check_SAA(model, model_idx, edge_size, dataloader, class_names, check_index=
     :param skip_batch: number of skip over minibatch
     :param pic_name: name of the output pic
     :param draw_path: path folder for output pic
+    :param check_all: choose the type of checking CAM : by default False to be only on the predicted type'
+                    True to be on all types
+
     :param writer: attach the pic to the tensorboard backend
 
     :return: None
@@ -168,6 +212,13 @@ def check_SAA(model, model_idx, edge_size, dataloader, class_names, check_index=
     dataloader = iter(dataloader)
     for i in range(check_index * skip_batch):  # skip the tested batchs
         inputs, classes = next(dataloader)
+
+    # choose checking type: false to be only on the predicted type'; true to be on all types
+    if check_all:
+        checking_type = ['ori', ]
+        checking_type.extend([cls for cls in range(len(class_names))])
+    else:
+        checking_type = ['ori', 'tar']
 
     # test model
     was_training = model.training
@@ -186,22 +237,29 @@ def check_SAA(model, model_idx, edge_size, dataloader, class_names, check_index=
 
     for j in range(inputs.size()[0]):
 
-        for type in ['ori', 'tar']:
+        for type in checking_type:
             images_so_far += 1
             if type == 'ori':
-                ax = plt.subplot(num_images, 2, images_so_far)
+                ax = plt.subplot(num_images, len(checking_type), images_so_far)
                 ax.axis('off')
                 ax.set_title('Ground Truth:{}'.format(class_names[int(labels[j])]))
                 imshow(inputs.cpu().data[j])
                 plt.pause(0.001)  # pause a bit so that plots are updated
 
             else:
-                ax = plt.subplot(num_images, 2, images_so_far)
+                ax = plt.subplot(num_images, len(checking_type), images_so_far)
                 ax.axis('off')
-                ax.set_title('Predict:{}'.format(class_names[preds[j]]))
-                # focus on the specific target class to create grayscale_cam
-                # grayscale_cam is generate on batch
-                grayscale_cam = grad_cam(inputs, target_category=None, eigen_smooth=False, aug_smooth=False)
+                if type == 'tar':
+                    ax.set_title('Predict: {}'.format(class_names[preds[j]]))
+                    # focus on the specific target class to create grayscale_cam
+                    # grayscale_cam is generate on batch
+                    grayscale_cam = grad_cam(inputs, target_category=None, eigen_smooth=False, aug_smooth=False)
+                else:
+                    # pseudo confidence by softmax
+                    ax.set_title('{:.1%} {}'.format(softmax(outputs[j])[int(type)], class_names[int(type)]))
+                    # focus on the specific target class to create grayscale_cam
+                    # grayscale_cam is generate on batch
+                    grayscale_cam = grad_cam(inputs, target_category=int(type), eigen_smooth=False, aug_smooth=False)
 
                 # get a cv2 encoding image from dataloder by inputs[j].cpu().numpy().transpose((1, 2, 0))
                 cam_img = show_cam_on_image(inputs[j].cpu().numpy().transpose((1, 2, 0)), grayscale_cam[j])
@@ -209,8 +267,8 @@ def check_SAA(model, model_idx, edge_size, dataloader, class_names, check_index=
                 plt.imshow(cam_img)
                 plt.pause(0.001)  # pause a bit so that plots are updated
 
-            if images_so_far == num_images * 2:
-                picpath = draw_path + '/' + pic_name + '.jpg'
+            if images_so_far == num_images * len(checking_type):  # complete when the pics is enough
+                picpath = os.path.join(draw_path, pic_name + '.jpg')
                 if not os.path.exists(draw_path):
                     os.makedirs(draw_path)
 
