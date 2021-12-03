@@ -94,7 +94,7 @@ def PC_to_stander(root_from=r'C:\Users\admin\Desktop\dataset\PC',
     for seq in tqdm(range(len(f_dir_list))):
         f_dir = f_dir_list[seq]
 
-        if '非癌' in f_dir or '阴性' in f_dir:
+        if '非癌' in f_dir or '阴性' in f_dir or '良性' in f_dir:
             root_target = root_negative
         else:
             root_target = root_positive
