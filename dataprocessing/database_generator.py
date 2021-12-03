@@ -1,5 +1,5 @@
 '''
-Organize the data to ensure that all data is in jpg format  ver： AUG 11th 13:46 official release
+Organize the data to ensure that all data is in jpg format  ver： DEC 3rd 13:46 official release
 
 '''
 import os
