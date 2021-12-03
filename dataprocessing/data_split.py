@@ -195,12 +195,16 @@ def k_fold_split(src_data_folder, target_data_folder='./kfold', k=5):
 
 
 if __name__ == '__main__':
-    # src_data_folder = r'C:\Users\admin\Desktop\jpg_dataset'
-    # target_data_folder = r'C:\Users\admin\Desktop\ZTY_dataset'
-    # data_set_split(src_data_folder, target_data_folder, train_scale=0.7, val_scale=0.1, test_scale=0.2)
+    # step1: create train_val and test dataset
+    src_data_folder = r'C:\Users\admin\Desktop\ROSE_5k'
+    target_data_folder1 = r'C:\Users\admin\Desktop\ROSE_5000_train_val'  # _5fold
+    data_set_split(src_data_folder, target_data_folder1, train_scale=0.8, val_scale=0.0, test_scale=0.2, Parallel_processing=False)
 
-    # Now used to process imagenet_1k data for pre-training
-    src_data_folder = r'/data/imagenet/train'
-    target_data_folder = r'/data/imagenet_1k'
-    data_set_split(src_data_folder, target_data_folder, train_scale=0.7, val_scale=0.1, test_scale=0.2)
-    # k_fold_split(src_data_folder, target_data_folder, k=5)
+    # step2: create 5 fold dataset
+    src_data_folder = os.path.join(target_data_folder1, 'train')
+    target_data_folder2 = r'C:\Users\admin\Desktop\ROSE_5000_5fold'  #
+    k_fold_split(src_data_folder, target_data_folder2, k=5)
+
+    # step3: move the test dataset into file folder of the 5 fold dataset
+    # currently by hand is faster
+    
