@@ -155,6 +155,6 @@ def trans_csv_folder_to_imagefoder(target_path=r'C:\Users\admin\Desktop\MRAS_SEE
 
 
 if __name__ == '__main__':
-    PC_to_stander(root_from=r'E:\dataset\PC1',
-                  root_positive=r'C:\Users\admin\Desktop\jpg_dataset1\P',
-                  root_negative=r'C:\Users\admin\Desktop\jpg_dataset1\N', corp_x=2400, corp_y=1800, f_x=1390, f_y=1038)
+    PC_to_stander(root_from=r'E:\dataset\PC',
+                  root_positive=r'C:\Users\admin\Desktop\jpg_dataset\Positive',
+                  root_negative=r'C:\Users\admin\Desktop\jpg_dataset\Negative', corp_x=2400, corp_y=1800, f_x=1390, f_y=1038)
