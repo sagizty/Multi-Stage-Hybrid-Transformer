@@ -1,5 +1,5 @@
 '''
-dataset divide script  ver： AUG 14th 22：00 official release
+dataset divide script  ver： DEC 3rd 18：00 official release
 
 ref：https://zhuanlan.zhihu.com/p/199238910
 '''
