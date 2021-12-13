@@ -1,32 +1,30 @@
-# MSHT: Multi-Stage Hybrid Transformer for ROSE images of pancreatic cancer diagnosing
+# MSHT: Multi-stage Hybrid Transformer for the ROSE Image Analysis
 
-This is the official page of the MSHT with its full experimental script and record, and everyone can view its whole training process and script. We dedicate to the open-source concept and wish the schoolers can benefit from our release. 
+This is the official page of the MSHT with its experimental script and records. We dedicate to the open-source concept and wish the schoolers can be benefited from our release. 
 
-The trained models and the dataset are not available publicly due to the hospital’s requirement.
+The trained models and the dataset are not available publicly due to the requirement of Peking Union Medical College Hospital (PUMCH).
 
 
 # background
 
-ROSE is a clinical innovation to diagnose pancreatic cancer. Many time and costs can be saved by EUS-FNA to obtain cell samples and staining faster for the on-site pathologist to draw out the conclusion. However, the requirement of on-site pathologists leads to limitations of expansion of the revolutionary method. Much more life may be saved if the AI system can help the onsite pathologist by simplifying the training and can be used in the hospitals lacking onsite pathologists.
+Rapid-onsite evaluation (ROSE) is a clinical innovation used to diagnose pancreatic cancer. In the ROSE diagnosis process, EUS-FNA surgery is used to obtain cell samples equipped with diff-quick technic to stain the samples, in the meantime, an on-site pathologist can determine the condition based on the views. However, the requirement of on-site pathologists leads to limitations in the expansion of this revolutionary method. Much more life can be saved if an AI system can help the onsite pathologists by doing their job. By enabling the ROSE process without the onsite pathologists, ROSE surgery can be expanded wildly since many hospitals currently are limited by the lack of onsite pathologists.
 
-In histology and cytopathology, convolutional neural networks perform robustly and achieve good generalisability by their inductive bias of regional related areas. In the analyzation process of ROSE images, the local feature is also pivotal; shapes and occupation of the cell core area can identify the cancer cells from their counterparts. However, the global features are essential to distinguish the positive samples by their relative size and arrangement. Meanwhile, to perform more robust and constrain well under the limited dataset size is also the barrier we have to face when dealing with the medical dataset. The cutting-edge Transformer module performs excellently in recent CV tasks, and its attention mechanism leads to better global modelling. An idea of hybridising the Transformer and robust CNN backbone to improve the global modelling process can be drawn by the need of the clinical requirement.
+In histology and cytopathology, convolutional neural networks (CNN) performed robustly and achieved good generalisability by the inductive bias of regional related areas. In the analysis of ROSE images, the local features are pivotal since the shapes and the nucleus size of the cells can be used in identifying the cancerous cells from their counterparts. However, the global features of the cells, including the relative size and arrangements, are also essential in distinguishing the positive samples. Meanwhile, the requirement of more robust performance and better constraining under the limited dataset size is also challenging when dealing with the medical dataset. The cutting-edge Transformer modules performed excellently in recent CV tasks, which presented striking sound global modelling by the attention mechanism.
+
+Therefore, an idea of hybridising the Transformer with a robust CNN backbone can be easily drawn out to improve the local-global modelling process. 
 
 
 # MSHT model
 
-The proposed Multi-stage Hybrid Transformer (MSHT) is designed for pancreatic cancer’s cytopathological images analysis. Along with clinical innovation strategy ROSE, MSHT aims for a faster and pathologist free trend in pancreatic cancer’s diagnoses. The main idea is to concordantly encode features and bias of the early-stage CNN into the global modelling process of the Transformer. MSHT comprises a CNN backbone that generates the feature map from different stages. A focus-guided Decoder structure (FGD) works on global modelling and local attention information hybridising.
+The proposed Multi-stage Hybrid Transformer (MSHT) is designed for pancreatic cancer’s cytopathological images analysis. Along with clinical innovation strategy ROSE, MSHT aims for a faster and pathologist free trend in pancreatic cancer’s diagnoses. The main idea is to concordantly encode local features and bias of the early-stage CNNs into the global modelling process of the Transformer. MSHT comprises a CNN backbone that generates the feature maps from different stages and a focus-guided Decoder structure (FGD) which works on global modelling with local attention information.
 
 ![Screen Shot 2021-12-08 at 2 45 42 PM](https://user-images.githubusercontent.com/50575108/145161704-4d589064-9c02-4205-bfad-942eebba11a1.png)
 
 
-Inspired by the gaze and glance of human eyes, we designed the FGD Focus block to obtain attention guidance. In the Focus block, the feature map from different CNN stages can be transformed to attention guidance of prominent and general information and help the transformer decoder in the global modelling process.
-
-
-
-The Focus is stacking up by: 1.An attention block 2.a dual path pooling layer 3. projecting 1x1 CNN 
+Inspired by the gaze and glance of human eyes, we designed the FGD Focus block to obtain attention guidance. In the Focus block, the feature maps from different CNN stages can be transformed to attention guidance. Combined of prominent and general information, the output sequence can help the transformer decoders in the global modelling. The Focus is stacking up by: 1.An attention block 2.a dual path pooling layer 3. projecting 1x1 CNN 
 ![Focus](https://user-images.githubusercontent.com/50575108/139060041-0562c141-008a-4af1-aa2c-134dc7a80f59.jpg)
 
-Meanwhile, a new decoder is used to work with the attention guidance from CNN stages. We use the MHGA(multi-head guided attention) to access the prominent and general attention information and encode them inside the transformer modelling process.
+Meanwhile, a new decoder is created to work with the attention guidance from CNN stages. We use the MHGA(multi-head guided attention) to capture the prominent and general attention information and encode them through the transformer modelling process.
 
 ![Decoder](https://user-images.githubusercontent.com/50575108/139060071-e34394c1-08a5-40e0-b4a4-9b1032722c64.jpg)
 
@@ -72,11 +70,11 @@ Meanwhile, a new decoder is used to work with the attention guidance from CNN st
 
 # Imaging results of MSHT
 
-Focus on the interpretability, the MSHT perform well when visualizing its attention area by grad CAM technique.
+Focus on the interpretability, the MSHT performs well when visualizing its attention area by grad CAM technique.
 ![Screen Shot 2021-12-08 at 2 48 27 PM](https://user-images.githubusercontent.com/50575108/145161856-ea7758ad-bc03-4b9e-adac-428d3e849725.png)
 
 
-*  For most cases, as shown in fig(), MSHT can correctly distinguish the samples and focus on the area like the senior pathologists, which outperform most counterparts.
+*  For most cases, as shown in the figure, MSHT can correctly distinguish the samples focusing on the area like the senior pathologists, which outperform most counterparts.
 
 <img width="1297" alt="Screen Shot 2021-11-05 at 3 20 23 PM" src="https://user-images.githubusercontent.com/50575108/140473142-58747866-784f-481d-8057-ff935c9ac380.png">
 
