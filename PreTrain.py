@@ -1,5 +1,5 @@
 """
-imagenet Pre-Training script  ver： OCT 27th 20：00 official release
+imagenet Pre-Training script  ver： DEC 20st 14:00 official release
 
 model: Hybrid2_384_PreTrain
 dataset: ImageNet-1k
@@ -27,6 +27,7 @@ from utils.visual_usage import *
 from utils.tools import setup_seed, del_file
 from Hybrid.getmodel import get_model
 
+
 # Training Script
 def better_performance(temp_acc, temp_vac, best_acc, best_vac):  # determin which epoch have the best model
 
@@ -40,7 +41,7 @@ def better_performance(temp_acc, temp_vac, best_acc, best_vac):  # determin whic
 
 def train_model_PT(model, dataloaders, criterion, optimizer, class_names, dataset_sizes, num_epochs=300,
                    intake_epochs=0, check_minibatch=10, scheduler=None, device=None,
-                   draw_path='/home/ZTY/imaging_results',
+                   draw_path='../imaging_results',
                    model_idx=None, gpu_use=-1, checkpoint_gap=0, checkpoint_path=None, load_checkpoint_path=None,
                    enable_attention_check=False, enable_visualize_check=False, enable_sam=False, writer=None):
     # scheduler is an LR scheduler object from torch.optim.lr_scheduler.
@@ -480,7 +481,8 @@ def main(args):
                                      transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]),
         "val": transforms.Compose([transforms.Resize((edge_size, edge_size)),
                                    transforms.ToTensor(),
-                                   transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])}
+                                   transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+                                   ])}
 
     datasets = {x: torchvision.datasets.ImageFolder(os.path.join(dataroot, x), data_transforms[x]) for x in
                 ['train', 'val']}  # get Train and Val imageNet dataset
@@ -491,7 +493,12 @@ def main(args):
                                                       num_workers=num_workers // 4 + 1)  # 4
                    }
 
-    class_names = ['cls' + str(i) for i in range(0, num_classes)]  # 0 to 999 classes
+    class_names = [d.name for d in os.scandir(os.path.join(dataroot, 'train')) if d.is_dir()]
+    if len(class_names) == num_classes:
+        print("class_names:", class_names)
+    else:
+        print('classfication number of the model mismatch the dataset requirement')
+        return -1
     dataset_sizes = {x: len(datasets[x]) for x in ['train', 'val']}
 
     # get model
@@ -534,8 +541,12 @@ def main(args):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    if gpu_use == -1:
+        model = nn.DataParallel(model)
+
     model.to(device)
 
+    # check model summary
     summary(model, input_size=(3, edge_size, edge_size))  # after to device
 
     print("model :", model_idx)
@@ -585,10 +596,10 @@ def main(args):
 
 
 def get_args_parser():
-    parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
+    parser = argparse.ArgumentParser(description='Supervised ImageNet Training')
 
     # Model Name or index
-    parser.add_argument('--model_idx', default='Hybrid3_384_PreTrain_sample', type=str, help='Model Name or index')
+    parser.add_argument('--model_idx', default='conformer_PT_sample', type=str, help='Model Name or index')
     # drop_rate, attn_drop_rate, drop_path_rate
     parser.add_argument('--drop_rate', default=0.0, type=float, help='dropout rate , default 0.0')
     parser.add_argument('--attn_drop_rate', default=0.0, type=float, help='dropout rate Aftter Attention, default 0.0')
@@ -623,11 +634,11 @@ def get_args_parser():
     # Dataset based parameters
     parser.add_argument('--num_classes', default=1000, type=int, help='classification number')
     parser.add_argument('--edge_size', default=384, type=int, help='edge size of input image')  # 224 256 384 1000
-    parser.add_argument('--num_workers', default=21, type=int, help='use CPU num_workers , default 4')
+    parser.add_argument('--num_workers', default=70, type=int, help='use CPU num_workers , default 4')
     # num_workers: 16-server 104 3090-server 21  batch_size: 16-server 210 3090-server 42
     # Training seting parameters
-    parser.add_argument('--batch_size', default=42, type=int, help='batch_size default 8')
-    parser.add_argument('--num_epochs', default=200, type=int, help='training epochs')
+    parser.add_argument('--batch_size', default=210, type=int, help='batch_size default 8')
+    parser.add_argument('--num_epochs', default=300, type=int, help='training epochs')
     parser.add_argument('--intake_epochs', default=0, type=int, help='only save model at epochs after intake_epochs')
     parser.add_argument('--lr', default=0.00001, type=float, help='learing rate')
     parser.add_argument('--lrf', type=float, default=0.1,
@@ -646,7 +657,7 @@ if __name__ == '__main__':
     main(args)
 
 '''
-Experiment record:
+Experiment record 0: MSHT
 PreTrain on 3*A6000 GPU memory 256G, video memory 3*48G CPU 104 kernal Xeon
 lr=0.00001 
 lrf=0.1
@@ -654,9 +665,13 @@ num_epochs=300 (145 is the best, at last)
 batch_size=210 
 num_worker=70
 checkpoint_gap=10
+edge_size=384
 
 
 USAGE suggestion like:
-nohup python PreTrain.py --model_idx Hybrid2_384_PreTrain --pretrained_backbone_off --enable_tensorboard --enable_notify &
-nohup tensorboard --logdir=/home/pancreatic-cancer-project/runs --host=172.28.221.17 --port=7777 > tensor_board.out 2>&1 &
+
+nohup python PreTrain.py --model_idx Hybrid2_384_PreTrain --enable_tensorboard --enable_notify 
+--num_epochs 300 --batch_size 210 --lrf 0.1 --num_workers 70 --edge_size 384 &
+nohup tensorboard --logdir=/home/pancreatic-cancer-project/runs --host=172.28.230.21 --port=7777 > tensor_board.out 2>&1 &
+
 '''
