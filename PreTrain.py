@@ -599,7 +599,7 @@ def get_args_parser():
     parser = argparse.ArgumentParser(description='Supervised ImageNet Training')
 
     # Model Name or index
-    parser.add_argument('--model_idx', default='conformer_PT_sample', type=str, help='Model Name or index')
+    parser.add_argument('--model_idx', default='Hybrid2_384_PreTrain', type=str, help='Model Name or index')
     # drop_rate, attn_drop_rate, drop_path_rate
     parser.add_argument('--drop_rate', default=0.0, type=float, help='dropout rate , default 0.0')
     parser.add_argument('--attn_drop_rate', default=0.0, type=float, help='dropout rate Aftter Attention, default 0.0')
