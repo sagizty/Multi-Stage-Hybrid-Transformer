@@ -9,7 +9,7 @@ The trained models and the dataset are not available publicly due to the require
 
 Rapid-onsite evaluation (ROSE) is a clinical innovation used to diagnose pancreatic cancer. In the ROSE diagnosis process, EUS-FNA surgery is used to obtain cell samples equipped with diff-quick technic to stain the samples, in the meantime, an on-site pathologist can determine the condition based on the views. However, the requirement of on-site pathologists leads to limitations in the expansion of this revolutionary method. Much more life can be saved if an AI system can help the onsite pathologists by doing their job. By enabling the ROSE process without the onsite pathologists, ROSE surgery can be expanded wildly since many hospitals currently are limited by the lack of onsite pathologists.
 
-In histology and cytopathology, convolutional neural networks (CNN) performed robustly and achieved good generalisability by the inductive bias of regional related areas. In the analysis of ROSE images, the local features are pivotal since the shapes and the nucleus size of the cells can be used in identifying the cancerous cells from their counterparts. However, the global features of the cells, including the relative size and arrangements, are also essential in distinguishing between the positive and negative samples. Meanwhile, the requirement of more robust performance and better constraining under the limited dataset size is also challenging when dealing with the medical dataset. The cutting-edge Transformer modules performed excellently in recent CV tasks, which presented striking sound global modeling by the attention mechanism.
+In histology and cytopathology, convolutional neural networks (CNN) performed robustly and achieved good generalisability by the inductive bias of regional related areas. In the analysis of ROSE images, the local features are pivotal since the shapes and the nucleus size of the cells can be used in identifying the cancerous cells from their counterparts. However, the global features of the cells, including the relative size and arrangements, are also essential in distinguishing between the positive and negative samples. Meanwhile, the requirement of more robust performance and better constraining under the limited dataset size is also challenging when dealing with the medical dataset. The cutting-edge Transformer modules performed excellently in recent CV tasks, which presented striking sound global modeling by the attention mechanism. Despite its strength, Transformers usually require a large dataset to perform full power which is currently not possibile in many medical-data-based tasks.
 
 Therefore, an idea of hybridising the Transformer with a robust CNN backbone can be easily drawn out to improve the local-global modeling process. 
 
@@ -90,3 +90,14 @@ A few positive samples were misclassified to their negative counterparts.  Compa
 A specific image was misclassified to positive condition by 3 of the 5-fold models. By the analysis of senior pathologists, the reason can be revealed on the fluctuation of the squeezed sample, which misleads MSHT by the shape of the cells.
 
 <img width="322" alt="Screen Shot 2021-10-30 at 2 34 10 PM" src="https://user-images.githubusercontent.com/50575108/139523247-f4b41d45-ac41-4c99-baf7-39439bd35ff2.png">
+
+
+
+# File structure
+This repository is built based on timm and pytorch 1.9.0+cu102
+
+We firstly use the Pretrain.py script to pretrain the model on the Imagenet-1k dataset and then use the pre-trained model for 5-fold experiment with Train.py
+
+All implimentation details are setting as the default hyperparameter in the ArgumentParser in the end of our code. 
+
+The colab script is presented for your convenience.
