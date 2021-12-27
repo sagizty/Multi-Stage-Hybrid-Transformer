@@ -1,1 +1,3 @@
-aa
+These files are used to process the dataset we collect in PUMCH and create a Imagenet datafolder.
+
+To evaluate the models on the ROSE images, we adopted a 5-fold training setting. Firstly, we randomly divided the 4240 images into two groups: a training-validation set and an independent test set with a ratio of 8:2. Then the training-validation set was randomly divided into five datasets, representing 5-folds with approximately the same number of images in each fold. In the fold k (k∈[1,2…5]), the k fold dataset was used as the validation dataset, while the data from the remaining four folds were used as the training datasets. In each experiment, the model was trained five times individually, with different validation and training datasets each time, but the independent test dataset was shared. 
