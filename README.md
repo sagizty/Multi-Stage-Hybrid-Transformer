@@ -20,7 +20,8 @@ The proposed Multi-stage Hybrid Transformer (MSHT) is designed for pancreatic ca
 
 
 
-![Screen Shot 2021-12-08 at 2 45 42 PM](https://user-images.githubusercontent.com/50575108/145161704-4d589064-9c02-4205-bfad-942eebba11a1.png)
+<img width="937" alt="MSHT Fig 1" src="https://user-images.githubusercontent.com/50575108/147544075-7ae6c553-f08d-49dc-b9c6-016a4ebefb4a.png">
+
 
 
 Inspired by the gaze and glance of human eyes, we designed the FGD Focus block to obtain attention guidance. In the Focus block, the feature maps from different CNN stages can be transformed to attention guidance. Combined of prominent and general information, the output sequence can help the transformer decoders in the global modeling. The Focus is stacking up by: 1.An attention block 2.a dual path pooling layer 3. projecting 1x1 CNN 
