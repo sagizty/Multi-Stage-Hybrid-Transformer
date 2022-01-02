@@ -99,6 +99,6 @@ This repository is built based on timm and pytorch 1.9.0+cu102
 
 We firstly use the Pretrain.py script to pretrain the model on the Imagenet-1k dataset and then use the pre-trained model for 5-fold experiment with Train.py
 
-All implimentation details are setting as the default hyperparameter in the ArgumentParser in the end of our code. 
+All implimentation details are setted as the default hyperparameter in the ArgumentParser in the end of our code. 
 
-The colab script is presented for your convenience.
+The colab script along with its tensorboard-runs are presented for your convenience. The detailed results are avaliable in the archieve.
