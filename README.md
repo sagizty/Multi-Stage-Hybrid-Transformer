@@ -102,3 +102,11 @@ We firstly use the Pretrain.py script to pretrain the model on the Imagenet-1k d
 All implimentation details are setted as the default hyperparameter in the ArgumentParser in the end of our code. 
 
 The colab script along with its tensorboard-runs are presented for your convenience. The detailed results are avaliable in the archieve.
+
+
+# Usage Notice:
+
+If you want to use our code, disable notifyemali because we trained our model with this email tool to receive the records. Since our account is private, we suggest you to set notifyemail backend information yourself before use '-- enable_notify'.
+
+
+The trained models and the dataset are not available publicly due to the requirement of Peking Union Medical College Hospital (PUMCH).
