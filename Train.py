@@ -430,8 +430,8 @@ def main(args):
     if enable_notify:  # use notifyemail to send the record to somewhere
         import notifyemail as notify
 
-        notify.Reboost(mail_host='smtp.163.com', mail_user='tum9598@163.com', mail_pass='EXVGQACCXPUIUQAE',
-                       default_reciving_list=['tum9598@163.com'],  # change here if u want to use notify
+        notify.Reboost(mail_host='smtp.163.com', mail_user='xxxxxx@aaaaa.com', mail_pass='xxxxxx',
+                       default_reciving_list=['xxxxxx@163.com'],  # fixme change here if u want to use notify
                        log_root_path='log', max_log_cnt=5)
 
         if enable_tensorboard:
