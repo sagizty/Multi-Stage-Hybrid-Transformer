@@ -1,11 +1,14 @@
-'''
-Organize log and output excel  ver： OCT 21th 14：00 official release
-'''
+"""
+Organize log and output excel   script  ver： Jun 27th 18:00
+enable_notify
+"""
 
+
+import argparse
 import json
 import os
 
-try:  # Adapt different systems
+try:  # 适配不同系统
     from utils.metrics import *
 except:
     from metrics import *
@@ -13,7 +16,7 @@ except:
 
 def find_all_files(root, suffix=None):
     '''
-    Return a list of all file paths with a specific suffix
+    返回特定后缀的所有文件路径列表
     '''
     res = []
     for root, _, files in os.walk(root):
@@ -57,43 +60,43 @@ def read_a_json_log(json_path, record_dir):
             empty_str2 += ' ,'
 
         result_csv_name = os.path.split(json_path)[1].split('.')[0] + '.csv'
-        result_indicators = [os.path.split(json_path)[1].split('.')[0], ]  # The first position is reserved for model name
+        result_indicators = [os.path.split(json_path)[1].split('.')[0], ]  # 第一个位置留给model name
 
     with open(os.path.join(record_dir, result_csv_name), 'w') as f_log:
         if test_status:
-            # Write header file 1
+            # 写头文件1
             f_log.write('Phase:,' + empty_str1 + ' Test\n')
             head = 'Epoch:, '
-            class_head = 'Acc, '  # target 'Acc, '+ category* indicator_list
+            class_head = 'Acc, '  # 目标 'Acc, '+ 类别* indicator_list
             for cls in cls_list:
                 for indicator in indicator_list:
                     class_head += cls + '_' + indicator + ', '
 
-            # Write header file 2
+            # 写头文件2
             f_log.write(head + class_head + '\n')  # Test
             f_log.close()
 
         else:
-            # Write header file 3
+            # 写头文件1
             f_log.write('Phase:,' + empty_str1 + ' Train' + empty_str2 + ' Val\n')
 
             head = 'Epoch:, '
-            class_head = 'Acc, '  # target 'Acc, '+ category* indicator_list
+            class_head = 'Acc, '  # 目标 'Acc, '+ 类别* indicator_list
             for cls in cls_list:
                 for indicator in indicator_list:
                     class_head += cls + '_' + indicator + ', '
 
-            # Write header file 4
+            # 写头文件2
             f_log.write(head + class_head + class_head + '\n')  # Train val
             f_log.close()
 
-    # Optimum init
+    # 初始化最佳
     best_val_acc = 0.0
 
     for epoch in range(1, epoch_num + 1):
         if test_status:
             epoch = 'test'
-        epoch_indicators = [epoch, ]  #  Leave the first position to epoch
+        epoch_indicators = [epoch, ]  # 第一个位置留给epoch
 
         for phase in ['train', 'val']:
             if test_status:
@@ -101,7 +104,7 @@ def read_a_json_log(json_path, record_dir):
 
             sum_tp = 0.0
 
-            phase_indicators = [0.0, ]  # Leave the first position to ACC
+            phase_indicators = [0.0, ]  # 第一个位置留给ACC
 
             for cls in cls_list:
                 log = load_dict[str(epoch)][phase][cls]
@@ -124,7 +127,7 @@ def read_a_json_log(json_path, record_dir):
                 cls_indicators = [Precision, Recall, Sensitivity, Specificity, NPV, F1_score]
                 phase_indicators.extend(cls_indicators)
 
-            Acc = 100 * (sum_tp / float(tp + tn + fn + fp))  # Just take the last tp tn fn fp and count the total
+            Acc = 100 * (sum_tp / float(tp + tn + fn + fp))  # 直接取最后一个的tp tn fn fp 算总数就行
             phase_indicators[0] = Acc
 
             epoch_indicators.extend(phase_indicators)
@@ -140,7 +143,7 @@ def read_a_json_log(json_path, record_dir):
                     f_log.write('\n')
                     f_log.close()
                 result_indicators.extend(epoch_indicators)
-                return result_indicators
+                return result_indicators  # 结束 返回test的log行
             else:
                 pass
 
@@ -153,9 +156,9 @@ def read_a_json_log(json_path, record_dir):
     with open(os.path.join(record_dir, result_csv_name), 'a') as f_log:
         f_log.write('\n')
         f_log.write('\n')
-        # Write header file 1
+        # 写头文件1
         f_log.write('Phase:,' + empty_str1 + ' Train' + empty_str2 + ' Val\n')
-        # Write header file 2
+        # 写头文件2
         f_log.write('Best Epoch:, ' + class_head + class_head + '\n')  # Train val
 
         try:
@@ -163,10 +166,10 @@ def read_a_json_log(json_path, record_dir):
                 f_log.write(str(i) + ', ')
             f_log.close()
             result_indicators.extend(best_epoch_indicators)
-            return result_indicators  # Finish
+            return result_indicators  # 结束 返回best epoch行
         except:
             print('No best_epoch_indicators')
-            return result_indicators  # Finish
+            return result_indicators  # 结束
 
 
 def read_all_logs(logs_path, record_dir):
@@ -179,7 +182,7 @@ def read_all_logs(logs_path, record_dir):
 
     with open(os.path.join(record_dir, result_csv_name), 'w') as f_log:
         for json_path in res:
-            result_indicators = read_a_json_log(json_path, record_dir)
+            result_indicators = read_a_json_log(json_path, record_dir)  # best_epoch_indicators of a model json log
 
             for i in result_indicators:
                 f_log.write(str(i) + ', ')
@@ -187,10 +190,56 @@ def read_all_logs(logs_path, record_dir):
         f_log.close()
 
 
-# json_path = r'C:\Users\admin\Desktop\runs\PC_Hybrid2_384_000_t4_507_e50_2'
-# record_dir = r'C:\Users\admin\Desktop'  # csv save dir
-# read_json_log(json_path, record_dir)
+def main(args):
+    ONE_LOG = args.ONE_LOG
+    draw_root = args.draw_root
+    record_dir = args.record_dir
 
-# read_all_logs(r'/home/pancreatic-cancer-project/runs', r'/home/pancreatic-cancer-project/runs/logs')
+    enable_notify = args.enable_notify  # False
 
-# read_all_logs(r'C:\Users\admin\Desktop\colab\runs', r'C:\Users\admin\Desktop\colab\logs')
+    if ONE_LOG:
+        read_a_json_log(draw_root, record_dir)
+    else:
+        read_all_logs(draw_root, record_dir)
+
+    if enable_notify:
+        import notifyemail as notify
+
+        notify.Reboost(mail_host='smtp.163.com', mail_user='xxxx@163.com', mail_pass='xxxx',
+                       default_reciving_list=['xxx@163.com'],  # Fixme change here if u want to use notify
+                       log_root_path='log', max_log_cnt=5)
+
+        notify.add_text('  ')
+
+        notify.add_text('PATH: ' + str(draw_root))
+        notify.add_text('  ')
+
+        if not ONE_LOG:
+            for Experiment_idx in os.listdir(draw_root):
+                notify.add_text('Experiment idxs: ' + str(Experiment_idx))
+                notify.add_text('  ')
+
+        notify.add_file(record_dir)
+        notify.send_log()
+
+
+def get_args_parser():
+    parser = argparse.ArgumentParser(description='Log checker')
+
+    parser.add_argument('--ONE_LOG', action='store_true', help='check only one LOG')
+
+    parser.add_argument('--draw_root', default=r'/home/pancreatic-cancer-project/runs',
+                        help='path to draw and save tensorboard output')
+
+    parser.add_argument('--record_dir', default=r'/home/pancreatic-cancer-project/CSV_logs',
+                        help='path to save csv log output')
+
+    parser.add_argument('--enable_notify', action='store_true', help='enable notify to send email')
+
+    return parser
+
+
+if __name__ == '__main__':
+    parser = get_args_parser()
+    args = parser.parse_args()
+    main(args)
