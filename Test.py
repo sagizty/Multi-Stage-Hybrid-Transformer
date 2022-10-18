@@ -1,5 +1,5 @@
 """
-Testing script  ver： OCT 27th 20：00 official release
+Testing script  ver： Oct 18th 18：30
 """
 
 from __future__ import print_function, division
@@ -22,7 +22,7 @@ from Hybrid.getmodel import get_model
 def test_model(model, test_dataloader, criterion, class_names, test_dataset_size, model_idx, edge_size,
                check_minibatch=100,
                device=None, draw_path='/home/MSHT/imaging_results', enable_attention_check=None,
-               enable_visualize_check=True,
+               enable_visualize_check=True, MSHT_CAM_check='decoder_4',
                writer=None):
     """
     Testing iteration
@@ -41,6 +41,9 @@ def test_model(model, test_dataloader, criterion, class_names, test_dataset_size
     :param draw_path: path folder for output pic
     :param enable_attention_check: use attention_check to show the pics of models' attention areas
     :param enable_visualize_check: use visualize_check to show the pics
+
+    :param MSHT_CAM_check: which layer's attention you want to see with MSHT ? default: decoder_4
+                          4 encoders and 4 decoders are ok to check (encoder_1 to decoder_4)
 
     :param writer: attach the records to the tensorboard backend
     """
@@ -142,7 +145,8 @@ def test_model(model, test_dataloader, criterion, class_names, test_dataset_size
                     check_SAA(model, model_idx, edge_size, test_dataloader, class_names, check_index,
                               num_images=1, device=device,
                               pic_name='GradCAM_' + str(epoch_idx) + '_I_' + str(index + 1),
-                              skip_batch=check_minibatch, draw_path=draw_path, writer=writer)
+                              skip_batch=check_minibatch, draw_path=draw_path, MSHT_CAM_check=MSHT_CAM_check,
+                              writer=writer)
                 except:
                     print('model:', model_idx, ' with edge_size', edge_size, 'is not supported yet')
             else:
@@ -241,6 +245,8 @@ def main(args):
 
     enable_attention_check = args.enable_attention_check  # False
     enable_visualize_check = args.enable_visualize_check  # False
+
+    MSHT_CAM_check = args.MSHT_CAM_check  # decoder_4
 
     model_idx = args.model_idx  # the model we are going to use. by the format of Model_size_other_info
     # structural parameter
@@ -381,7 +387,7 @@ def main(args):
                model_idx=model_idx, edge_size=edge_size,
                check_minibatch=check_minibatch, device=device, draw_path=draw_path,
                enable_attention_check=enable_attention_check,
-               enable_visualize_check=enable_visualize_check, writer=writer)
+               enable_visualize_check=enable_visualize_check, MSHT_CAM_check=MSHT_CAM_check, writer=writer)
 
 
 def get_args_parser():
@@ -421,6 +427,10 @@ def get_args_parser():
 
     parser.add_argument('--enable_attention_check', action='store_true', help='check and save attention map')
     parser.add_argument('--enable_visualize_check', action='store_true', help='check and save pics')
+
+    # MSHT_CAM_check
+    parser.add_argument('--MSHT_CAM_check', default='decoder_4', type=str,
+                        help='4 encoders and 4 decoders are ok to check (encoder_1 to decoder_4)')
 
     # Dataset based parameters
     parser.add_argument('--num_classes', default=2, type=int, help='classification number')
