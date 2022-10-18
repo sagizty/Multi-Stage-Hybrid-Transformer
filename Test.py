@@ -1,5 +1,5 @@
 """
-Testing script  ver： Oct 18th 18：30
+Testing script  ver： Oct 18th 19：00
 """
 
 from __future__ import print_function, division
@@ -262,7 +262,11 @@ def main(args):
     model_path = args.model_path
     dataroot = args.dataroot
 
-    test_model_idx = 'PC_' + model_idx + '_test'
+    if model_idx[0:7] == 'Hybrid2':
+        test_model_idx = 'PC_' + model_idx + '_test_'+MSHT_CAM_check
+    else:
+        test_model_idx = 'PC_' + model_idx + '_test'
+
     draw_path = os.path.join(draw_root, test_model_idx)
     save_model_path = os.path.join(model_path, 'PC_' + model_idx + '.pth')
     # choose the test dataset
