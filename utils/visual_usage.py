@@ -1,5 +1,5 @@
 """
-attention visulization config  ver： Nov 29th 15：30 official release
+attention visulization config  ver： Oct 18th 18：30
 """
 
 import torch
@@ -88,7 +88,7 @@ def swinT_transform_384(tensor, height=12, width=12):  # 384 12
     return result
 
 
-def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True):
+def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True, MSHT_CAM_check='decoder_4'):
     """
     :param model: model object
     :param model_idx: model idx for the getting pre-setted layer and size
@@ -139,15 +139,72 @@ def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True):
                            reshape_transform=cls_token_s12_transform)
 
     elif model_idx[0:7] == 'Hybrid2' and edge_size == 384:
-        target_layers = [model.dec4.norm1]
+        if MSHT_CAM_check == 'decoder_1':
+            target_layers = [model.dec1.norm1]
 
-        if 'CLS' in model_idx.split('_') and 'No' in model_idx.split('_'):
+            if 'CLS' in model_idx.split('_') and 'No' in model_idx.split('_'):
+                grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                                   reshape_transform=no_cls_token_s12_transform)
+
+            else:
+                grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                                   reshape_transform=cls_token_s12_transform)
+
+        elif MSHT_CAM_check == 'decoder_2':
+            target_layers = [model.dec2.norm1]
+
+            if 'CLS' in model_idx.split('_') and 'No' in model_idx.split('_'):
+                grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                                   reshape_transform=no_cls_token_s12_transform)
+
+            else:
+                grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                                   reshape_transform=cls_token_s12_transform)
+
+        elif MSHT_CAM_check == 'decoder_3':
+            target_layers = [model.dec3.norm1]
+
+            if 'CLS' in model_idx.split('_') and 'No' in model_idx.split('_'):
+                grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                                   reshape_transform=no_cls_token_s12_transform)
+
+            else:
+                grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                                   reshape_transform=cls_token_s12_transform)
+
+        elif MSHT_CAM_check == 'decoder_4':
+            target_layers = [model.dec4.norm1]
+
+            if 'CLS' in model_idx.split('_') and 'No' in model_idx.split('_'):
+                grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                                   reshape_transform=no_cls_token_s12_transform)
+
+            else:
+                grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                                   reshape_transform=cls_token_s12_transform)
+
+        elif MSHT_CAM_check == 'encoder_1':
+            target_layers = [model.backbone.layer1[-1]]
             grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
-                               reshape_transform=no_cls_token_s12_transform)
+                               reshape_transform=None)
 
+        elif MSHT_CAM_check == 'encoder_2':
+            target_layers = [model.backbone.layer2[-1]]
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=None)
+
+        elif MSHT_CAM_check == 'encoder_3':
+            target_layers = [model.backbone.layer3[-1]]
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=None)
+
+        elif MSHT_CAM_check == 'encoder_4':
+            target_layers = [model.backbone.layer4[-1]]
+            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
+                               reshape_transform=None)
         else:
-            grad_cam = GradCAM(model, target_layers=target_layers, use_cuda=use_cuda,
-                               reshape_transform=cls_token_s12_transform)
+            print('ERRO in MSHT_CAM_check')
+            return -1
 
     elif model_idx[0:7] == 'Hybrid3' and edge_size == 384:
         target_layers = [model.dec3.norm1]
@@ -183,7 +240,8 @@ def choose_cam_by_model(model, model_idx, edge_size, use_cuda=True):
 
 
 def check_SAA(model, model_idx, edge_size, dataloader, class_names, check_index=1, num_images=2, device='cpu',
-              skip_batch=10, pic_name='test', draw_path='../imaging_results', check_all=True, writer=None):
+              skip_batch=10, pic_name='test', draw_path='../imaging_results', check_all=True,
+              MSHT_CAM_check='decoder_4', writer=None):
     """
     check num_images of images and visual the models's attention area
     output a pic with 2 column and rows of num_images
@@ -202,13 +260,16 @@ def check_SAA(model, model_idx, edge_size, dataloader, class_names, check_index=
     :param check_all: choose the type of checking CAM : by default False to be only on the predicted type'
                     True to be on all types
 
+    :param MSHT_CAM_check: which layer's attention you want to see with MSHT ? default: decoder_4
+                          4 encoders and 4 decoders are ok to check (encoder_1 to decoder_4)
+
     :param writer: attach the pic to the tensorboard backend
 
     :return: None
     """
     from pytorch_grad_cam.utils import show_cam_on_image
 
-    # Get a batch of training data
+    # Get a batch of training data (using these iter method is for other skill and funcs)
     dataloader = iter(dataloader)
     for i in range(check_index * skip_batch):  # skip the tested batchs
         inputs, classes = next(dataloader)
@@ -230,7 +291,7 @@ def check_SAA(model, model_idx, edge_size, dataloader, class_names, check_index=
     outputs = model(inputs)
     _, preds = torch.max(outputs, 1)
 
-    grad_cam = choose_cam_by_model(model, model_idx, edge_size)  # choose model
+    grad_cam = choose_cam_by_model(model, model_idx, edge_size, MSHT_CAM_check=MSHT_CAM_check)  # choose model
 
     images_so_far = 0
     plt.figure()
