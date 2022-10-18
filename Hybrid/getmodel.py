@@ -1,7 +1,9 @@
 """
-get model func
-ver： Nov 1st 16：00 official release
+get model func  ver： Oct 18th 18：30
 """
+import os, sys
+sys.path.append(os.path.realpath('.'))
+
 import torch
 import torch.nn as nn
 from torchvision import models
@@ -76,6 +78,14 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('twins_pcpvt_base', pretrained=pretrained_backbone, num_classes=num_classes)
 
+    elif model_idx[0:5] == 'pit_b' and edge_size == 224:  # Transfer learning for coat_mini
+        import timm
+        from pprint import pprint
+
+        model_names = timm.list_models('*pit*')
+        pprint(model_names)
+        model = timm.create_model('pit_b_224', pretrained=pretrained_backbone, num_classes=num_classes)
+
     elif model_idx[0:6] == 'convit' and edge_size == 224:  # Transfer learning for ConViT
         import timm
         from pprint import pprint
@@ -83,6 +93,28 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         model_names = timm.list_models('*convit*')
         pprint(model_names)
         model = timm.create_model('convit_base', pretrained=pretrained_backbone, num_classes=num_classes)
+
+    elif model_idx[0:9] == 'conformer':  # Transfer learning for Conformer base
+        from counterpart_models import conformer
+
+        embed_dim = 576
+        channel_ratio = 6
+
+        if pretrained_backbone:
+            model = conformer.Conformer(num_classes=1000, patch_size=16, channel_ratio=channel_ratio,
+                                        embed_dim=embed_dim, depth=12, num_heads=9, mlp_ratio=4, qkv_bias=True)
+            # this is the related path to <code>, not <Hybrid>
+            save_model_path = '../saved_models/Conformer_base_patch16.pth'  # model is downloaded at this path
+            # downloaded from official model state at https://github.com/pengzhiliang/Conformer
+            model.load_state_dict(torch.load(save_model_path), False)
+
+            model.trans_cls_head = nn.Linear(embed_dim, num_classes)
+            model.conv_cls_head = nn.Linear(int(256 * channel_ratio), num_classes)
+            model.cls_head = nn.Linear(int(2 * num_classes), num_classes)
+
+        else:
+            model = conformer.Conformer(num_classes=num_classes, patch_size=16, channel_ratio=channel_ratio,
+                                        embed_dim=embed_dim, depth=12, num_heads=9, mlp_ratio=4, qkv_bias=True)
 
     elif model_idx[0:6] == 'ResNet':  # Transfer learning for the ResNets
         if model_idx[0:8] == 'ResNet34':
@@ -136,6 +168,14 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('visformer_small', pretrained=pretrained_backbone, num_classes=num_classes)
 
+    elif model_idx[0:9] == 'coat_mini' and edge_size == 224:  # Transfer learning for coat_mini
+        import timm
+        from pprint import pprint
+
+        model_names = timm.list_models('*coat*')
+        pprint(model_names)
+        model = timm.create_model('coat_mini', pretrained=pretrained_backbone, num_classes=num_classes)
+
     elif model_idx[0:10] == 'swin_b_384':  # Transfer learning for Swin Transformer (swin_b_384)
         import timm
         from pprint import pprint
@@ -172,8 +212,18 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('vit_base_resnet50_384', pretrained=pretrained_backbone, num_classes=num_classes)
 
+    elif model_idx[0:15] == 'coat_lite_small' and edge_size == 224:  # Transfer learning for coat_lite_small
+        import timm
+        from pprint import pprint
+
+        model_names = timm.list_models('*coat*')
+        pprint(model_names)
+        model = timm.create_model('coat_lite_small', pretrained=pretrained_backbone, num_classes=num_classes)
+
     elif model_idx[0:16] == 'cross_former_224':  # Transfer learning for crossformer base
-        from ..cross_former_models import crossformer
+
+        from counterpart_models import crossformer
+
         backbone = crossformer.CrossFormer(img_size=224,
                                            patch_size=[4, 8, 16, 32],
                                            in_chans=3,
@@ -191,13 +241,15 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
                                            patch_norm=True,
                                            use_checkpoint=False,
                                            merge_size=[[2, 4], [2, 4], [2, 4]], )
-        if pretrained_backbone:
-            save_model_path = '../../saved_models/crossformer-b.pth'  # todo model is downloaded at this path
-            # downloaded from official model state at https://github.com/cheerss/CrossFormer
-            backbone.load_state_dict(torch.load(save_model_path)['model'], False)
-        model = crossformer.cross_former_cls_head_warp(backbone, num_classes)
 
-        return model
+        if pretrained_backbone:
+            save_model_path = '../saved_models/crossformer-b.pth'  # model is downloaded at this path
+
+            # downloaded from official model state at https://github.com/cheerss/CrossFormer
+
+            backbone.load_state_dict(torch.load(save_model_path)['model'], False)
+
+        model = crossformer.cross_former_cls_head_warp(backbone, num_classes)
 
     else:
         print("The model is not difined in the script！！")
