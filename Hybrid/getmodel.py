@@ -1,5 +1,5 @@
 """
-get model func  ver： Oct 18th 18：30
+get model func    Script  ver： Oct 18th 20:00
 """
 import os, sys
 sys.path.append(os.path.realpath('.'))
@@ -198,29 +198,7 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('inception_v3', pretrained=pretrained_backbone, num_classes=num_classes)
 
-    elif model_idx[0:14] == 'efficientnet_b':  # Transfer learning for efficientnet_b3,4
-        import timm
-        from pprint import pprint
-        model_names = timm.list_models('*efficientnet*')
-        pprint(model_names)
-        model = timm.create_model(model_idx[0:15], pretrained=pretrained_backbone, num_classes=num_classes)
-
-    elif model_idx[0:14] == 'ResN50_ViT_384':  # ResNet+ViT融合模型384
-        import timm
-        from pprint import pprint
-        model_names = timm.list_models('*vit_base_resnet*')
-        pprint(model_names)
-        model = timm.create_model('vit_base_resnet50_384', pretrained=pretrained_backbone, num_classes=num_classes)
-
-    elif model_idx[0:15] == 'coat_lite_small' and edge_size == 224:  # Transfer learning for coat_lite_small
-        import timm
-        from pprint import pprint
-
-        model_names = timm.list_models('*coat*')
-        pprint(model_names)
-        model = timm.create_model('coat_lite_small', pretrained=pretrained_backbone, num_classes=num_classes)
-
-    elif model_idx[0:16] == 'cross_former_224':  # Transfer learning for crossformer base
+    elif model_idx[0:12] == 'cross_former' and edge_size == 224:  # Transfer learning for crossformer base
 
         from counterpart_models import crossformer
 
@@ -250,6 +228,28 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
             backbone.load_state_dict(torch.load(save_model_path)['model'], False)
 
         model = crossformer.cross_former_cls_head_warp(backbone, num_classes)
+
+    elif model_idx[0:14] == 'efficientnet_b':  # Transfer learning for efficientnet_b3,4
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*efficientnet*')
+        pprint(model_names)
+        model = timm.create_model(model_idx[0:15], pretrained=pretrained_backbone, num_classes=num_classes)
+
+    elif model_idx[0:14] == 'ResN50_ViT_384':  # ResNet+ViT融合模型384
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*vit_base_resnet*')
+        pprint(model_names)
+        model = timm.create_model('vit_base_resnet50_384', pretrained=pretrained_backbone, num_classes=num_classes)
+
+    elif model_idx[0:15] == 'coat_lite_small' and edge_size == 224:  # Transfer learning for coat_lite_small
+        import timm
+        from pprint import pprint
+
+        model_names = timm.list_models('*coat*')
+        pprint(model_names)
+        model = timm.create_model('coat_lite_small', pretrained=pretrained_backbone, num_classes=num_classes)
 
     else:
         print("The model is not difined in the script！！")
