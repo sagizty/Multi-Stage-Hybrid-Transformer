@@ -1,5 +1,5 @@
 """
-get model func    Script  ver： Oct 18th 20:00
+get model func    Script  ver： Dec 5th 13:40
 """
 import os, sys
 sys.path.append(os.path.realpath('.'))
@@ -30,7 +30,57 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
 
     :return: prepared model
     """
-    if model_idx[0:3] == 'ViT':
+    if model_idx[0:5] == 'ViT_h':
+        # Transfer learning for ViT
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*vit*')
+        pprint(model_names)
+        if edge_size == 224:
+            model = timm.create_model('vit_huge_patch14_224_in21k', pretrained=pretrained_backbone, num_classes=num_classes)
+        else:
+            print('not a avaliable image size with', model_idx)
+
+    elif model_idx[0:5] == 'ViT_l':
+        # Transfer learning for ViT
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*vit*')
+        pprint(model_names)
+        if edge_size == 224:
+            model = timm.create_model('vit_large_patch16_224', pretrained=pretrained_backbone, num_classes=num_classes)
+        elif edge_size == 384:
+            model = timm.create_model('vit_large_patch16_384', pretrained=pretrained_backbone, num_classes=num_classes)
+        else:
+            print('not a avaliable image size with', model_idx)
+
+    elif model_idx[0:5] == 'ViT_s':
+        # Transfer learning for ViT
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*vit*')
+        pprint(model_names)
+        if edge_size == 224:
+            model = timm.create_model('vit_small_patch16_224', pretrained=pretrained_backbone, num_classes=num_classes)
+        elif edge_size == 384:
+            model = timm.create_model('vit_small_patch16_384', pretrained=pretrained_backbone, num_classes=num_classes)
+        else:
+            print('not a avaliable image size with', model_idx)
+
+    elif model_idx[0:5] == 'ViT_t':
+        # Transfer learning for ViT
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*vit*')
+        pprint(model_names)
+        if edge_size == 224:
+            model = timm.create_model('vit_tiny_patch16_224', pretrained=pretrained_backbone, num_classes=num_classes)
+        elif edge_size == 384:
+            model = timm.create_model('vit_tiny_patch16_384', pretrained=pretrained_backbone, num_classes=num_classes)
+        else:
+            print('not a avaliable image size with', model_idx)
+
+    elif model_idx[0:5] == 'ViT_b' or model_idx[0:3] == 'ViT':  # vit_base
         # Transfer learning for ViT
         import timm
         from pprint import pprint
@@ -41,7 +91,7 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         elif edge_size == 384:
             model = timm.create_model('vit_base_patch16_384', pretrained=pretrained_backbone, num_classes=num_classes)
         else:
-            pass
+            print('not a avaliable image size with', model_idx)
 
     elif model_idx[0:3] == 'vgg':
         # Transfer learning for vgg16_bn
@@ -78,7 +128,7 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('twins_pcpvt_base', pretrained=pretrained_backbone, num_classes=num_classes)
 
-    elif model_idx[0:5] == 'pit_b' and edge_size == 224:  # Transfer learning for coat_mini
+    elif model_idx[0:5] == 'pit_b' and edge_size == 224:  # Transfer learning for PiT
         import timm
         from pprint import pprint
 
@@ -86,35 +136,56 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('pit_b_224', pretrained=pretrained_backbone, num_classes=num_classes)
 
-    elif model_idx[0:6] == 'convit' and edge_size == 224:  # Transfer learning for ConViT
+    elif model_idx[0:5] == 'gcvit' and edge_size == 224:  # Transfer learning for gcvit
+        import timm
+        from pprint import pprint
+
+        model_names = timm.list_models('*gcvit*')
+        pprint(model_names)
+        model = timm.create_model('gcvit_base', pretrained=pretrained_backbone, num_classes=num_classes)
+
+    elif model_idx[0:6] == 'xcit_s':  # Transfer learning for XCiT
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*xcit*')
+        pprint(model_names)
+        if edge_size == 384:
+            model = timm.create_model('xcit_small_12_p16_384_dist', pretrained=pretrained_backbone,
+                                      num_classes=num_classes)
+        elif edge_size == 224:
+            model = timm.create_model('xcit_small_12_p16_224_dist', pretrained=pretrained_backbone,
+                                      num_classes=num_classes)
+        else:
+            pass
+
+    elif model_idx[0:6] == 'xcit_m':  # Transfer learning for XCiT
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*xcit*')
+        pprint(model_names)
+        if edge_size == 384:
+            model = timm.create_model('xcit_medium_24_p16_384_dist', pretrained=pretrained_backbone,
+                                      num_classes=num_classes)
+        elif edge_size == 224:
+            model = timm.create_model('xcit_medium_24_p16_224_dist', pretrained=pretrained_backbone,
+                                      num_classes=num_classes)
+        else:
+            pass
+
+    elif model_idx[0:6] == 'mvitv2':  # Transfer learning for MViT v2 small  fixme bug in model!
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*mvitv2*')
+        pprint(model_names)
+        model = timm.create_model('mvitv2_small_cls', pretrained=pretrained_backbone, num_classes=num_classes)
+
+    elif model_idx[0:6] == 'convit' and edge_size == 224:  # Transfer learning for ConViT fixme bug in model!
         import timm
         from pprint import pprint
 
         model_names = timm.list_models('*convit*')
         pprint(model_names)
         model = timm.create_model('convit_base', pretrained=pretrained_backbone, num_classes=num_classes)
-
-    elif model_idx[0:9] == 'conformer':  # Transfer learning for Conformer base
-        from counterpart_models import conformer
-
-        embed_dim = 576
-        channel_ratio = 6
-
-        if pretrained_backbone:
-            model = conformer.Conformer(num_classes=1000, patch_size=16, channel_ratio=channel_ratio,
-                                        embed_dim=embed_dim, depth=12, num_heads=9, mlp_ratio=4, qkv_bias=True)
-            # this is the related path to <code>, not <Hybrid>
-            save_model_path = '../saved_models/Conformer_base_patch16.pth'  # model is downloaded at this path
-            # downloaded from official model state at https://github.com/pengzhiliang/Conformer
-            model.load_state_dict(torch.load(save_model_path), False)
-
-            model.trans_cls_head = nn.Linear(embed_dim, num_classes)
-            model.conv_cls_head = nn.Linear(int(256 * channel_ratio), num_classes)
-            model.cls_head = nn.Linear(int(2 * num_classes), num_classes)
-
-        else:
-            model = conformer.Conformer(num_classes=num_classes, patch_size=16, channel_ratio=channel_ratio,
-                                        embed_dim=embed_dim, depth=12, num_heads=9, mlp_ratio=4, qkv_bias=True)
 
     elif model_idx[0:6] == 'ResNet':  # Transfer learning for the ResNets
         if model_idx[0:8] == 'ResNet34':
@@ -161,12 +232,41 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('xception', pretrained=pretrained_backbone, num_classes=num_classes)
 
+    elif model_idx[0:9] == 'pvt_v2_b0':  # Transfer learning for PVT v2 (todo not okey with torch summary)
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*pvt_v2*')
+        pprint(model_names)
+        model = timm.create_model('pvt_v2_b0', pretrained=pretrained_backbone, num_classes=num_classes)
+
     elif model_idx[0:9] == 'visformer' and edge_size == 224:  # Transfer learning for Visformer
         import timm
         from pprint import pprint
         model_names = timm.list_models('*visformer*')
         pprint(model_names)
         model = timm.create_model('visformer_small', pretrained=pretrained_backbone, num_classes=num_classes)
+
+    elif model_idx[0:9] == 'conformer':  # Transfer learning for Conformer base
+        from counterpart_models import conformer
+
+        embed_dim = 576
+        channel_ratio = 6
+
+        if pretrained_backbone:
+            model = conformer.Conformer(num_classes=1000, patch_size=16, channel_ratio=channel_ratio,
+                                        embed_dim=embed_dim, depth=12, num_heads=9, mlp_ratio=4, qkv_bias=True)
+            # this is the related path to <code>, not <Hybrid>
+            save_model_path = '../saved_models/Conformer_base_patch16.pth'  # model is downloaded at this path
+            # downloaded from official model state at https://github.com/pengzhiliang/Conformer
+            model.load_state_dict(torch.load(save_model_path), False)
+
+            model.trans_cls_head = nn.Linear(embed_dim, num_classes)
+            model.conv_cls_head = nn.Linear(int(256 * channel_ratio), num_classes)
+            model.cls_head = nn.Linear(int(2 * num_classes), num_classes)
+
+        else:
+            model = conformer.Conformer(num_classes=num_classes, patch_size=16, channel_ratio=channel_ratio,
+                                        embed_dim=embed_dim, depth=12, num_heads=9, mlp_ratio=4, qkv_bias=True)
 
     elif model_idx[0:9] == 'coat_mini' and edge_size == 224:  # Transfer learning for coat_mini
         import timm
@@ -176,12 +276,20 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('coat_mini', pretrained=pretrained_backbone, num_classes=num_classes)
 
-    elif model_idx[0:10] == 'swin_b_384':  # Transfer learning for Swin Transformer (swin_b_384)
+    elif model_idx[0:10] == 'swin_b_384' and edge_size == 384:  # Transfer learning for Swin Transformer (swin_b_384)
         import timm
         from pprint import pprint
         model_names = timm.list_models('*swin*')
         pprint(model_names)  # swin_base_patch4_window12_384  swin_base_patch4_window12_384_in22k
         model = timm.create_model('swin_base_patch4_window12_384', pretrained=pretrained_backbone,
+                                  num_classes=num_classes)
+
+    elif model_idx[0:10] == 'swin_b_224' and edge_size == 224:  # Transfer learning for Swin Transformer (swin_b_384)
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*swin*')
+        pprint(model_names)  # swin_base_patch4_window7_224  swin_base_patch4_window7_224_in22k
+        model = timm.create_model('swin_base_patch4_window7_224', pretrained=pretrained_backbone,
                                   num_classes=num_classes)
 
     elif model_idx[0:11] == 'mobilenetv3':  # Transfer learning for mobilenetv3
@@ -191,6 +299,13 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('mobilenetv3_large_100', pretrained=pretrained_backbone, num_classes=num_classes)
 
+    elif model_idx[0:11] == 'mobilevit_s':  # Transfer learning for mobilevit_s
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*mobilevit*')
+        pprint(model_names)
+        model = timm.create_model('mobilevit_s', pretrained=pretrained_backbone, num_classes=num_classes)
+
     elif model_idx[0:11] == 'inceptionv3':  # Transfer learning for Inception v3
         import timm
         from pprint import pprint
@@ -199,10 +314,8 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         model = timm.create_model('inception_v3', pretrained=pretrained_backbone, num_classes=num_classes)
 
     elif model_idx[0:12] == 'cross_former' and edge_size == 224:  # Transfer learning for crossformer base
-
         from counterpart_models import crossformer
-
-        backbone = crossformer.CrossFormer(img_size=224,
+        backbone = crossformer.CrossFormer(img_size=edge_size,
                                            patch_size=[4, 8, 16, 32],
                                            in_chans=3,
                                            num_classes=0,  # get backbone only
@@ -219,15 +332,18 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
                                            patch_norm=True,
                                            use_checkpoint=False,
                                            merge_size=[[2, 4], [2, 4], [2, 4]], )
-
         if pretrained_backbone:
             save_model_path = '../saved_models/crossformer-b.pth'  # model is downloaded at this path
-
             # downloaded from official model state at https://github.com/cheerss/CrossFormer
-
             backbone.load_state_dict(torch.load(save_model_path)['model'], False)
-
         model = crossformer.cross_former_cls_head_warp(backbone, num_classes)
+
+    elif model_idx[0:13] == 'crossvit_base':  # Transfer learning for crossvit_base  (todo not okey with torch summary)
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*crossvit_base*')
+        pprint(model_names)
+        model = timm.create_model('crossvit_base_240', pretrained=pretrained_backbone, num_classes=num_classes)
 
     elif model_idx[0:14] == 'efficientnet_b':  # Transfer learning for efficientnet_b3,4
         import timm
@@ -251,8 +367,16 @@ def get_model(num_classes=1000, edge_size=224, model_idx=None, drop_rate=0.0, at
         pprint(model_names)
         model = timm.create_model('coat_lite_small', pretrained=pretrained_backbone, num_classes=num_classes)
 
+    elif model_idx[0:17] == 'efficientformer_l' and edge_size == 224:  # Transfer learning for efficientnet_b3,4
+        import timm
+        from pprint import pprint
+        model_names = timm.list_models('*efficientformer*')
+        pprint(model_names)
+        model = timm.create_model(model_idx[0:18], pretrained=pretrained_backbone, num_classes=num_classes)
+
     else:
-        print("The model is not difined in the script！！")
+        print('\nThe model', model_idx, 'with the edge size of', edge_size)
+        print("is not defined in the script！！", '\n')
         return -1
 
     try:
