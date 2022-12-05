@@ -1,5 +1,5 @@
 """
-Training script  ver： OCT 27th 20：00 official release
+Training script  ver： Dec 5th 13：00 official release
 
 dataset structure: ImageNet
 image folder dataset is used.
@@ -566,11 +566,6 @@ def main(args):
         model = nn.DataParallel(model)
 
     model.to(device)
-
-    try:
-        summary(model, input_size=(3, edge_size, edge_size))  # should be after .to(device)
-    except:
-        pass
 
     print("model :", model_idx)
 
