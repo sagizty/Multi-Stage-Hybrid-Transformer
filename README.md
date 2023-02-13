@@ -1,4 +1,7 @@
 # MSHT: Multi-stage Hybrid Transformer for the ROSE Image Analysis
+<img width="2047" alt="Figure" src="https://user-images.githubusercontent.com/50575108/218405254-fe678e60-bf64-44dd-bdcc-4f6b200fcbd2.png">
+
+
 Paper link: https://ieeexplore.ieee.org/document/10006398
 
 
