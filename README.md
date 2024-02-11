@@ -3,7 +3,7 @@
 
 
 Paper link: https://ieeexplore.ieee.org/document/10006398
-
+Pre-trained model weight on ImageNet-1k is shared at https://drive.google.com/file/d/1FRQibtwi48LQRVxV7VKoEKjfWBCGUmhd/view?usp=sharing
 
 This is the official page of the MSHT with its experimental script and records. We dedicate to the open-source concept and wish the schoolers can be benefited from our release. 
 
@@ -113,5 +113,6 @@ The colab script along with its tensorboard-runs are presented for your convenie
 
 If you want to use our code, disable notifyemali because we trained our model with this email tool to receive the records. Since our account is private, we suggest you to set notifyemail backend information yourself before use '-- enable_notify'.
 
+Pre-trained model weight on ImageNet-1k is shared at https://drive.google.com/file/d/1FRQibtwi48LQRVxV7VKoEKjfWBCGUmhd/view?usp=sharing
 
-The trained models and the dataset are not available publicly due to the requirement of Peking Union Medical College Hospital (PUMCH).
+The ROSE-trained models and the dataset are not available publicly due to the requirement of Peking Union Medical College Hospital (PUMCH).
